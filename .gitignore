@@ -1,0 +1,52 @@
+# Claude AI directory
+.claude/
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.turbo/
+.svelte-kit/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.e2e
+.env.test
+
+# Editor directories
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# Browser test screenshots (Playwright/Vitest browser mode)
+**/__screenshots__/
+
+# Playwright E2E test artifacts
+playwright-report/
+test-results/
+.auth/
+
+# Database files (dev/test databases should not be committed)
+*.db
+*.db-shm
+*.db-wal
+
+# Claude Code artifacts
+.claudecontext
+*.code-workspace

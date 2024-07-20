@@ -1,0 +1,75 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".svelte-kit/**", "dist/**", "build/**", ".next/**"],
+      "env": ["NODE_ENV"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.svelte", "**/*.test.ts", "**/*.test.tsx"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "test:unit": {
+      "dependsOn": [],
+      "outputs": ["coverage/**"]
+    },
+    "test:integration": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"]
+    },
+    "test:coverage": {
+      "dependsOn": ["test"],
+      "outputs": ["coverage/**"]
+    },
+    "test:ci": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "env": ["CI"]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "clean": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false,
+      "env": ["DATABASE_URL", "DATABASE_AUTH_TOKEN"]
+    },
+    "db:migrate:create": {
+      "cache": false
+    },
+    "db:migrate:rollback": {
+      "cache": false,
+      "env": ["DATABASE_URL", "DATABASE_AUTH_TOKEN"]
+    },
+    "db:reset": {
+      "cache": false,
+      "env": ["DATABASE_URL", "DATABASE_AUTH_TOKEN"]
+    },
+    "db:seed": {
+      "cache": false,
+      "env": ["DATABASE_URL", "DATABASE_AUTH_TOKEN"]
+    },
+    "db:studio": {
+      "cache": false,
+      "persistent": true,
+      "env": ["DATABASE_URL", "DATABASE_AUTH_TOKEN"]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@host/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./trpc": "./src/trpc.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@host/database": "*",
+    "@trpc/server": "^11.0.0-rc.633",
+    "superjson": "^2.2.2",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@vitest/ui": "^3.2.4",
+    "typescript": "^5.7.2",
+    "vitest": "2.1.9",
+    "vitest-mock-extended": "^3.1.0"
+  }
+}

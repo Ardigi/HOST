@@ -1,0 +1,54 @@
+{
+  "name": "@host/design-tokens",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./colors": {
+      "types": "./dist/colors.d.ts",
+      "import": "./dist/colors.js"
+    },
+    "./typography": {
+      "types": "./dist/typography.d.ts",
+      "import": "./dist/typography.js"
+    },
+    "./spacing": {
+      "types": "./dist/spacing.d.ts",
+      "import": "./dist/spacing.js"
+    },
+    "./touch-targets": {
+      "types": "./dist/touch-targets.d.ts",
+      "import": "./dist/touch-targets.js"
+    },
+    "./elevation": {
+      "types": "./dist/elevation.d.ts",
+      "import": "./dist/elevation.js"
+    },
+    "./motion": {
+      "types": "./dist/motion.d.ts",
+      "import": "./dist/motion.js"
+    },
+    "./theme": {
+      "types": "./dist/theme.d.ts",
+      "import": "./dist/theme.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@material/material-color-utilities": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.10",
+    "typescript": "^5.7.2"
+  }
+}

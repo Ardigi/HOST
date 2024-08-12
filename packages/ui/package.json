@@ -1,0 +1,37 @@
+{
+  "name": "@host/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components": "./src/components/index.ts",
+    "./components/POSButton.svelte": "./src/components/POSButton.svelte",
+    "./components/POSCard.svelte": "./src/components/POSCard.svelte",
+    "./components/POSDialog.svelte": "./src/components/POSDialog.svelte",
+    "./components/POSTextField.svelte": "./src/components/POSTextField.svelte"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@host/shared": "*",
+    "m3-svelte": "^5.9.0",
+    "svelte": "^5.16.0"
+  },
+  "devDependencies": {
+    "@iconify/types": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^4.0.4",
+    "@vitest/browser": "2.1.9",
+    "patch-package": "^8.0.1",
+    "playwright": "^1.55.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.20",
+    "vitest": "2.1.9",
+    "vitest-browser-svelte": "^1.1.0"
+  }
+}

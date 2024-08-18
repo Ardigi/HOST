@@ -1,0 +1,20 @@
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    /**
+     * skipLibCheck: true
+     *
+     * WHY: m3-svelte uses complex union types for polymorphic components that exceed
+     * TypeScript's type complexity limits. These are library-level type definition
+     * errors in node_modules, NOT runtime errors.
+     *
+     * SAFETY: Our wrapper components (POSCard, POSButton, etc.) provide clean,
+     * simple type signatures that hide this complexity from application code.
+     * All APPLICATION code is fully type-checked with strict mode.
+     *
+     * See: docs/m3-svelte-integration.md (lines 75-122) for full explanation
+     */
+    "skipLibCheck": true
+  }
+}

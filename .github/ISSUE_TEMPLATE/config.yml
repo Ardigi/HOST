@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discussion Forum
+    url: https://github.com/pour-people/host/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📚 Documentation
+    url: https://github.com/pour-people/host/blob/main/docs/README.md
+    about: Read the complete documentation
+  - name: 🆘 Support
+    url: https://github.com/pour-people/host/discussions/categories/q-a
+    about: Get help from the community

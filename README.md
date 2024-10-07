@@ -8,7 +8,7 @@
 
 ```bash
 # Clone and setup
-git clone https://github.com/pour-people/host.git
+git clone https://github.com/Ardigi/HOST.git
 cd host
 
 # Quick setup (Windows PowerShell)
@@ -139,7 +139,7 @@ HOST is a modern, fast, and user-friendly Point-of-Sale system designed specific
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/pour-people/host.git
+git clone https://github.com/Ardigi/HOST.git
 cd host
 
 # 2. Install dependencies
@@ -331,7 +331,7 @@ We welcome contributions! Please follow our TDD workflow and coding standards.
 
 2. **Setup**: Run `.\scripts\dev-setup.ps1`
 
-3. **Pick an Issue**: Check [GitHub Issues](https://github.com/pour-people/host/issues)
+3. **Pick an Issue**: Check [GitHub Issues](https://github.com/Ardigi/HOST/issues)
 
 4. **Write Tests First**: TDD approach required
 
@@ -376,10 +376,9 @@ We welcome contributions! Please follow our TDD workflow and coding standards.
 ### Get Help
 
 - 📚 **Documentation**: Check [docs/README.md](./docs/README.md)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/pour-people/host/issues)
-- 💡 **Feature Requests**: [GitHub Issues](https://github.com/pour-people/host/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/pour-people/host/discussions)
-- 📧 **Email**: development@host-pos.com
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/Ardigi/HOST/issues)
+- 💡 **Feature Requests**: [GitHub Issues](https://github.com/Ardigi/HOST/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/Ardigi/HOST/discussions)
 
 ### Reporting Issues
 
@@ -392,9 +391,9 @@ Use our issue templates:
 
 ## 📜 License
 
-**Unlicensed** - Proprietary software for Pour People
+**Proprietary Software**
 
-Copyright © 2025 Pour People. All rights reserved.
+Copyright © 2025 Digi. All rights reserved.
 
 ---
 
@@ -437,7 +436,5 @@ Built with modern technologies:
 🗺️ Detailed roadmap: [02-technical-roadmap.md](./docs/02-technical-roadmap.md)
 
 ---
-
-**Made with ❤️ by Pour People**
 
 *Building the future of hospitality technology*

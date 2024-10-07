@@ -2,6 +2,11 @@
 
 **Modern Point-of-Sale System for Bars & Restaurants**
 
+![Tests](https://img.shields.io/badge/tests-701_passing-success)
+![Coverage](https://img.shields.io/badge/coverage-99.93%25-brightgreen)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7.2-blue)
+![License](https://img.shields.io/badge/license-Proprietary-red)
+
 ---
 
 ## 🚀 Quick Start
@@ -47,6 +52,17 @@ npm run dev
 ## 🎯 About
 
 HOST is a modern, fast, and user-friendly Point-of-Sale system designed specifically for bars and restaurants. Built with cutting-edge technologies and a focus on performance, accessibility, and developer experience.
+
+## 📸 Screenshots
+
+*Coming soon - UI screenshots will be added as components are completed*
+
+<!-- Screenshots will showcase:
+- POS Order Entry Interface
+- Kitchen Display System
+- Admin Dashboard
+- Payment Processing Flow
+-->
 
 ### Key Highlights
 

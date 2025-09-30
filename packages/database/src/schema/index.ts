@@ -6,5 +6,6 @@
 export * from './inventory';
 export * from './menu';
 export * from './orders';
+export * from './payments';
 export * from './users';
 export * from './venues';

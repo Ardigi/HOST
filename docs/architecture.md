@@ -127,7 +127,7 @@ graph TB
 - **Routing**: SvelteKit File-based Router
 - **Forms**: SvelteKit Form Actions + Zod
 - **Animations**: Svelte Transitions + Motion
-- **UI Components**: Skeleton UI / Melt UI (headless)
+- **Design System**: Material Design 3 via m3-svelte
 - **Testing**: Vitest + Svelte Testing Library + Playwright
 
 ### Backend
@@ -149,6 +149,246 @@ graph TB
 - **Edge Functions**: Cloudflare Workers
 - **Hosting**: Vercel / Railway
 - **Monitoring**: Sentry + Datadog
+
+---
+
+## Design System
+
+### Material Design 3 (MD3)
+
+We use **Material Design 3** as our primary design system, implemented via the native Svelte library **m3-svelte**. This decision provides comprehensive component coverage, built-in accessibility, and optimal performance for POS environments.
+
+#### Why Material Design 3?
+
+**Decision Rationale** (see [ADR-003](adr/ADR-003-material-design-3.md)):
+
+1. **Comprehensive Component Library**: 50+ production-ready components covering all POS needs
+2. **Native Svelte Implementation**: Built specifically for Svelte 5 with runes, no wrapper overhead
+3. **Superior Performance**: ~150KB bundle size (3x smaller than official @material/web)
+4. **Built-in Accessibility**: WCAG 2.1 AA compliance out of the box
+5. **Touch-Optimized**: Material Design 3 specifications include proper touch target sizing (48px+ minimum)
+6. **Dynamic Theming**: HCT color system generates accessible palettes from brand colors
+7. **Industry Standard**: Familiar, professional design language users recognize
+
+#### Component Library
+
+**Available Components** (50+):
+
+**Buttons & Actions**:
+- Button (filled, outlined, text, elevated, tonal)
+- FAB (Floating Action Button)
+- Icon Button
+- Segmented Button
+
+**Forms & Input**:
+- TextField (filled, outlined)
+- DateField, TimeField
+- Select, Autocomplete
+- Checkbox, Radio, Switch
+- Slider, Range Slider
+
+**Navigation**:
+- AppBar (Top App Bar)
+- Navigation Drawer
+- Navigation Rail
+- Bottom Navigation
+- Tabs
+
+**Containers**:
+- Card (elevated, filled, outlined)
+- Dialog (modal, fullscreen)
+- Bottom Sheet, Side Sheet
+- Menu, Menu Item
+- Tooltip
+
+**Data Display**:
+- List, List Item
+- DataTable
+- Chips (input, filter, suggestion, assist)
+- Badge
+- Divider
+
+**Feedback**:
+- Snackbar (toast notifications)
+- Progress Indicator (circular, linear)
+- Skeleton Loader
+
+#### Design Tokens
+
+Material Design 3 uses a comprehensive token system for consistency:
+
+**Color System** (HCT - Hue, Chroma, Tone):
+```typescript
+// HOST Brand Color: Tailwind blue-600 (#2563eb)
+export const HOST_THEME = {
+  primary: '#2563eb',
+  // MD3 generates 13 tonal variants for light/dark themes
+  primaryContainer: '#dbeafe',
+  onPrimary: '#ffffff',
+  onPrimaryContainer: '#172554',
+
+  // Semantic colors
+  error: '#b91c1c',
+  warning: '#ea580c',
+  success: '#16a34a',
+  info: '#0284c7',
+};
+```
+
+**Touch Targets**:
+```typescript
+export const TOUCH_TARGETS = {
+  minimum: 48,      // WCAG 2.1 AA compliance
+  comfortable: 56,  // Primary POS actions
+  critical: 80,     // Transaction buttons
+};
+```
+
+**Spacing Scale** (8px base):
+```typescript
+export const SPACING = {
+  xs: '4px',
+  sm: '8px',
+  md: '16px',
+  lg: '24px',
+  xl: '32px',
+  xxl: '48px',
+};
+```
+
+**Typography Scale**:
+```typescript
+export const TYPOGRAPHY = {
+  displayLarge: { size: '57px', weight: 400, lineHeight: '64px' },
+  displayMedium: { size: '45px', weight: 400, lineHeight: '52px' },
+  headlineLarge: { size: '32px', weight: 400, lineHeight: '40px' },
+  titleLarge: { size: '22px', weight: 400, lineHeight: '28px' },
+  bodyLarge: { size: '16px', weight: 400, lineHeight: '24px' },
+  labelLarge: { size: '14px', weight: 500, lineHeight: '20px' },
+};
+```
+
+#### POS-Optimized Wrappers
+
+We wrap MD3 components with POS-specific optimizations:
+
+**POSButton** - Enhanced touch targets:
+```svelte
+<script lang="ts">
+  import { Button } from 'm3-svelte';
+  export let size: 'comfortable' | 'critical' = 'comfortable';
+</script>
+
+<Button
+  class="pos-button"
+  style:min-height="{size === 'critical' ? 80 : 56}px"
+  style:min-width="{size === 'critical' ? 200 : 120}px"
+  on:click
+>
+  <slot />
+</Button>
+```
+
+**POSTextField** - Larger for tablet input:
+```svelte
+<script lang="ts">
+  import { TextField } from 'm3-svelte';
+  export let value: string;
+  export let label: string;
+</script>
+
+<TextField
+  bind:value
+  {label}
+  style:min-height="56px"
+  style:font-size="18px"
+  on:input
+/>
+```
+
+#### Accessibility Features
+
+Material Design 3 components include:
+
+- **WCAG 2.1 AA Contrast**: 4.5:1 for normal text, 3:1 for large text
+- **Touch Targets**: 48px × 48px minimum (WCAG 2.1 AA)
+- **Keyboard Navigation**: Full keyboard support with visible focus indicators
+- **Screen Reader Support**: Proper ARIA attributes and semantic HTML
+- **Focus Management**: Logical tab order and focus trapping in modals
+- **Motion Preferences**: Respects `prefers-reduced-motion`
+- **High Contrast Mode**: Works with system high contrast settings
+
+#### Theming
+
+**Light Theme** (Default):
+- Clean, bright interface for well-lit environments
+- Blue primary color matching HOST brand
+- High contrast for readability
+
+**Dark Theme** (Bar Mode):
+- Reduced eye strain in low-light environments
+- Maintains WCAG AA contrast ratios
+- Automatically generated from light theme
+
+**Implementation**:
+```typescript
+// packages/design-tokens/src/theme.ts
+import { materialDynamicColors } from 'm3-svelte/theme';
+
+export const lightTheme = materialDynamicColors('#2563eb', {
+  isDark: false,
+  contrastLevel: 0, // Standard contrast
+});
+
+export const darkTheme = materialDynamicColors('#2563eb', {
+  isDark: true,
+  contrastLevel: 0,
+});
+```
+
+#### Integration with Tailwind CSS 4
+
+MD3 design tokens integrate seamlessly with Tailwind CSS 4:
+
+```css
+/* apps/pos/src/app.css */
+@import "tailwindcss";
+
+@theme {
+  /* MD3 Color Tokens */
+  --color-primary: #2563eb;
+  --color-primary-container: #dbeafe;
+  --color-on-primary: #ffffff;
+
+  /* MD3 Touch Targets */
+  --spacing-touch-min: 48px;
+  --spacing-touch-comfortable: 56px;
+  --spacing-touch-critical: 80px;
+
+  /* MD3 Typography */
+  --font-size-display-large: 57px;
+  --font-size-headline-large: 32px;
+  --font-size-title-large: 22px;
+}
+```
+
+#### Component Testing Standards
+
+Every MD3 component wrapper must pass:
+
+1. **Touch Target Tests**: Verify minimum 48×48px
+2. **Accessibility Tests**: axe-core automated scanning + manual screen reader testing
+3. **Visual Regression**: Screenshot tests for light/dark themes
+4. **Keyboard Navigation**: Full keyboard interaction testing
+5. **Performance**: Bundle size impact < 5KB per component
+
+#### Documentation
+
+- **Component Library**: See [design-system.md](design-system.md) for complete component documentation
+- **Implementation Guide**: See [checklists/md3-component-checklist.md](checklists/md3-component-checklist.md)
+- **Architecture Decision**: See [ADR-003: Material Design 3](adr/ADR-003-material-design-3.md)
+- **Official MD3 Docs**: https://m3.material.io/
+- **m3-svelte Docs**: https://ktibow.github.io/m3-svelte
 
 ---
 

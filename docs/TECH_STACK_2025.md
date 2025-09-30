@@ -23,6 +23,23 @@ This document lists the official versions and documentation sources for all tech
 - **Migration**: No `tailwind.config.js` needed - configure in CSS
 - **Browser Support**: Safari 16.4+, Chrome 111+, Firefox 128+
 
+### m3-svelte (Material Design 3)
+- **Version**: 5.2.2+
+- **Official Docs**: https://ktibow.github.io/m3-svelte
+- **GitHub**: https://github.com/KTibow/m3-svelte
+- **NPM Package**: https://www.npmjs.com/package/m3-svelte
+- **Key Features**:
+  - Native Svelte 5 implementation (runes, snippets, modern patterns)
+  - 50+ Material Design 3 components
+  - Built-in WCAG 2.1 AA accessibility
+  - Touch-optimized design tokens (48px minimum targets)
+  - Dynamic color system (HCT color space)
+  - Light and dark theme support
+  - ~150KB bundle size (3x smaller than @material/web)
+- **Components**: Buttons, FAB, TextField, DateField, Select, Checkbox, Radio, Switch, Card, Dialog, Sheet, Menu, List, DataTable, Tabs, AppBar, Drawer, Snackbar, ProgressIndicator, Badge, Chips, and 30+ more
+- **Material 3 Expressive**: Latest MD3 evolution with enhanced expressiveness
+- **Why Chosen**: See [ADR-003: Material Design 3](adr/ADR-003-material-design-3.md)
+
 ## Backend Stack
 
 ### Node.js
@@ -129,6 +146,7 @@ This document lists the official versions and documentation sources for all tech
 | Svelte | 5.16.0 | 5.16.0+ | Runes are optional |
 | SvelteKit | 2.15.2 | 2.15.2+ | Compatible with Vite 7 |
 | Tailwind CSS | 4.0.0 | 4.0.0+ | CSS-first config |
+| m3-svelte | 5.2.2 | 5.2.2+ | Requires Svelte 5.16+ |
 | tRPC | v11 | v11+ | See migration guide |
 | Drizzle | 0.36.4 | 0.36.4+ | Use dialect, not driver |
 | Keycloak | 26.0 | 26.3+ | No LTS available |
@@ -159,6 +177,8 @@ This document lists the official versions and documentation sources for all tech
 - **Svelte**: https://svelte.dev/
 - **SvelteKit**: https://svelte.dev/docs/kit
 - **Tailwind CSS**: https://tailwindcss.com/
+- **m3-svelte**: https://ktibow.github.io/m3-svelte
+- **Material Design 3**: https://m3.material.io/
 - **tRPC**: https://trpc.io/
 - **Drizzle ORM**: https://orm.drizzle.team/
 - **Turso**: https://docs.turso.tech/
@@ -170,5 +190,5 @@ This document lists the official versions and documentation sources for all tech
 
 ---
 
-*Last Verified: 2025-09-29*
+*Last Verified: 2025-09-30*
 *All versions and documentation links confirmed as of this date.*

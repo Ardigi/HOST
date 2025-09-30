@@ -107,6 +107,7 @@ See `ADR-001-example-template.md` for a complete example.
 |-----|-------|--------|------|
 | [001](ADR-001-svelte-5-framework.md) | Svelte 5 as Frontend Framework | Accepted | 2025-09-29 |
 | [002](ADR-002-turso-database.md) | Turso (LibSQL) as Primary Database | Accepted | 2025-09-29 |
+| [003](ADR-003-material-design-3.md) | Material Design 3 with m3-svelte | Accepted | 2025-09-30 |
 
 ## Creating a New ADR
 

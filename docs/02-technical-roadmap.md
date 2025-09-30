@@ -43,27 +43,46 @@
 **Dependencies**: None
 **Deliverables**: Working auth system, database connection
 
-#### Week 2: UI Foundation & Components
-**Monday-Tuesday**
-- [ ] Setup SvelteKit applications (POS, KDS, Admin)
-- [ ] Configure Tailwind CSS 4 + design tokens
-- [ ] Implement Svelte transitions & animations
-- [ ] Create base Svelte component library
+#### Week 2: Design System & Material Design 3
+**Monday** (Foundation)
+- [ ] Install m3-svelte 5.2.2+ in packages/ui
+- [ ] Create packages/design-tokens package structure
+- [ ] Generate Material Theme with HOST brand color (#2563eb)
+- [ ] Setup Tailwind CSS 4 integration with MD3 tokens
+- [ ] Document design token usage in design-tokens/README.md
 
-**Wednesday-Thursday**
-- [ ] Build layout system (app shell)
-- [ ] Create navigation components
-- [ ] Implement responsive grid system
-- [ ] Build form components with validation
+**Tuesday** (Core POS Components)
+- [ ] Create POSButton wrapper (80px critical, 56px comfortable)
+- [ ] Build POSCard with enhanced spacing (24px padding)
+- [ ] Implement POSTextField with 56px height for tablets
+- [ ] Create POSDialog with fullscreen mobile support
+- [ ] Write component tests (touch targets, accessibility)
 
-**Friday**
-- [ ] Create loading states and skeletons
-- [ ] Implement error handling with SvelteKit
-- [ ] Build notification system with Svelte stores
-- [ ] Setup Histoire or Storybook for Svelte components
+**Wednesday** (Navigation & Layout)
+- [ ] Build POSAppBar with branded styling
+- [ ] Implement Navigation Drawer for settings/admin
+- [ ] Create Bottom Navigation for mobile POS
+- [ ] Build Tab navigation for order management
+- [ ] Test keyboard navigation and screen reader support
 
-**Dependencies**: Week 1 authentication
-**Deliverables**: Component library, design system
+**Thursday** (Forms & Data Entry)
+- [ ] Create POSSelect with large touch targets
+- [ ] Build POSCheckbox/Radio/Switch components
+- [ ] Implement POSDateField/TimeField for scheduling
+- [ ] Create number pad component for payment entry
+- [ ] Add form validation patterns with Zod
+
+**Friday** (Migration & Testing)
+- [ ] Migrate existing order page to MD3 components
+- [ ] Update navigation components to MD3
+- [ ] Convert form inputs to MD3 TextField
+- [ ] Add dark mode toggle for bar environments
+- [ ] Run accessibility audit (axe-core, manual testing)
+- [ ] Verify bundle size impact (target: <200KB increase)
+
+**Dependencies**: Week 1 authentication, SvelteKit initialized
+**Deliverables**: MD3 design system, POS-optimized components, migrated order page
+**Documentation**: ADR-003, design-system.md, component checklist
 
 #### Week 3: Data Models & Core APIs
 **Monday-Tuesday**

@@ -9,6 +9,67 @@ HOST POS system must be accessible to all users, including those with disabiliti
 
 ---
 
+## Material Design 3 Built-in Accessibility
+
+HOST POS uses **Material Design 3 (MD3) via m3-svelte** as the primary design system, which provides comprehensive accessibility features out of the box (see [ADR-003](adr/ADR-003-material-design-3.md) and [design-system.md](design-system.md)).
+
+### MD3 WCAG 2.1 AA Compliance
+
+Material Design 3 components include built-in accessibility features that meet or exceed WCAG 2.1 Level AA requirements:
+
+**Color & Contrast**:
+- **4.5:1 contrast ratio** for normal text against backgrounds (WCAG 2.1 AA requirement)
+- **3:1 contrast ratio** for large text (≥18pt or ≥14pt bold)
+- **3:1 contrast ratio** for UI components and graphical objects
+- **HCT color system** (Hue, Chroma, Tone) automatically generates accessible color palettes
+- **Dynamic color themes** maintain contrast requirements in both light and dark modes
+
+**Touch Targets**:
+- **48px × 48px minimum** touch target size (WCAG 2.1 AA Level A requirement: 2.5.5 Target Size)
+- **56px** comfortable touch targets for primary POS actions
+- **80px** critical touch targets for transaction buttons
+- Proper spacing between interactive elements to prevent accidental activation
+
+**Keyboard Navigation**:
+- Full keyboard support for all interactive components
+- Logical tab order following visual layout
+- Focus trapping in modal dialogs and sheets
+- Visible focus indicators with **3:1 contrast minimum** (WCAG 2.1 AA)
+- Keyboard shortcuts follow platform conventions
+
+**Screen Reader Support**:
+- Proper ARIA attributes on all components
+- Semantic HTML elements (buttons, links, headings, lists)
+- Dynamic content announcements via ARIA live regions
+- Descriptive labels and accessible names
+- Role descriptions for custom components
+
+**Motion & Animation**:
+- Respects `prefers-reduced-motion` media query
+- Essential motion only (non-decorative)
+- Animation duration and easing adjustable
+
+**Additional Features**:
+- High contrast mode support
+- Text size/zoom support up to 200%
+- Works with system accessibility settings
+- Compatible with screen readers (NVDA, JAWS, VoiceOver)
+- Focus management in complex components
+
+### Implementation Notes
+
+While MD3 provides WCAG 2.1 AA compliance by default, all POS-optimized component wrappers must:
+
+1. **Maintain MD3 Accessibility**: Do not override or remove built-in accessibility features
+2. **Test Each Wrapper**: Run automated (axe-core) and manual accessibility tests
+3. **Verify Touch Targets**: Ensure custom sizing meets 48px × 48px minimum
+4. **Test with Assistive Tech**: Verify with actual screen readers and keyboard navigation
+5. **Document Deviations**: If accessibility features must be modified, document why and ensure alternative compliance
+
+See [checklists/md3-component-checklist.md](checklists/md3-component-checklist.md) for complete accessibility testing requirements.
+
+---
+
 ## WCAG 2.1 Principles
 
 ### 1. Perceivable

@@ -16,6 +16,7 @@ This directory contains comprehensive documentation for the HOST POS system, des
 ### Technical Architecture
 - **[architecture.md](architecture.md)** ⭐ - System architecture, design patterns, and technology stack
 - **[TECH_STACK_2025.md](TECH_STACK_2025.md)** ⭐ - Official versions, documentation links, and migration notes (2025)
+- **[design-system.md](design-system.md)** ⭐ - Material Design 3 component library and design tokens
 - **[02-technical-roadmap.md](02-technical-roadmap.md)** - 12-week development schedule with dependencies
 - **[03-database-schema.md](03-database-schema.md)** - Complete database design with Turso/LibSQL
 - **[04-api-specification.yaml](04-api-specification.yaml)** - OpenAPI 3.0 specification for all endpoints

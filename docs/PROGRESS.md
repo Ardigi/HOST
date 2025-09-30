@@ -29,7 +29,7 @@
 | Week | Focus | Status | Progress |
 |------|-------|--------|----------|
 | Week 1 | Infrastructure & Authentication | 🟡 In Progress | 80% |
-| Week 2 | UI Foundation & Components | ⬜ Not Started | 0% |
+| Week 2 | Design System & Material Design 3 | ⬜ Not Started | 0% |
 | Week 3 | Data Models & Core APIs | ⬜ Not Started | 0% |
 
 ### Phase 2: Core POS (Weeks 4-6) - ⬜ Not Started
@@ -178,23 +178,38 @@ None currently.
    - [ ] Complete Keycloak integration
    - [ ] Setup testing framework
 
-2. **Start UI Foundation**
-   - [ ] SvelteKit applications (POS, KDS, Admin)
-   - [ ] Tailwind CSS 4 configuration
-   - [ ] Base component library
-   - [ ] Layout system
+2. **Material Design 3 Integration**
+   - [ ] Install m3-svelte 5.2.2+ in packages/ui
+   - [ ] Create design tokens package with HOST brand theme
+   - [ ] Generate Material Theme (#2563eb blue)
+   - [ ] Setup Tailwind CSS 4 + MD3 token integration
 
-3. **Testing Setup**
-   - [ ] Write first integration tests
-   - [ ] Setup CI/CD pipeline
-   - [ ] Configure coverage reporting
+3. **POS-Optimized Components**
+   - [ ] POSButton (80px critical, 56px comfortable touch targets)
+   - [ ] POSCard, POSTextField, POSDialog
+   - [ ] Navigation components (AppBar, Drawer, Bottom Nav)
+   - [ ] Form components (Select, Checkbox, Radio, DateField)
+
+4. **Component Testing**
+   - [ ] Touch target tests (48px minimum, WCAG 2.1 AA)
+   - [ ] Accessibility tests (axe-core, screen readers)
+   - [ ] Visual regression tests (light/dark themes)
+   - [ ] Bundle size verification (<200KB target)
+
+5. **Migration & Documentation**
+   - [ ] Migrate existing order page to MD3 components
+   - [ ] Update navigation to MD3
+   - [ ] Add dark mode toggle
+   - [ ] Complete design-system.md documentation
 
 ### Key Milestones
 
-- ✅ Complete database connection
-- ✅ Authentication working end-to-end
-- ✅ First component created
-- ✅ First test passing
+- ✅ m3-svelte installed and configured
+- ✅ Design tokens package created
+- ✅ First POS component wrapper completed
+- ✅ Order page migrated to MD3
+- ✅ Accessibility audit passed (WCAG 2.1 AA)
+- ✅ Documentation complete (ADR-003, design-system.md)
 
 ---
 
@@ -222,6 +237,7 @@ See [Architecture Decision Records (ADR)](./adr/README.md) for details.
 |-----|----------|------|--------|
 | [001](./adr/ADR-001-svelte-5-framework.md) | Svelte 5 as Frontend Framework | 2025-09-29 | Accepted |
 | [002](./adr/ADR-002-turso-database.md) | Turso (LibSQL) as Primary Database | 2025-09-29 | Accepted |
+| [003](./adr/ADR-003-material-design-3.md) | Material Design 3 with m3-svelte | 2025-09-30 | Accepted |
 
 ---
 
@@ -299,6 +315,56 @@ See [Architecture Decision Records (ADR)](./adr/README.md) for details.
 - [ ] Register industry affiliation (US-032)
 - [ ] Track team performance (US-033)
 - [ ] Claim winner rewards (US-034)
+
+---
+
+## Material Design 3 Component Progress
+
+### POS-Optimized Component Wrappers
+
+| Component | Status | Touch Target | Accessibility | Dark Mode | Bundle Size |
+|-----------|--------|--------------|---------------|-----------|-------------|
+| POSButton | ⬜ Not Started | - | - | - | - |
+| POSCard | ⬜ Not Started | - | - | - | - |
+| POSTextField | ⬜ Not Started | - | - | - | - |
+| POSDialog | ⬜ Not Started | - | - | - | - |
+| POSAppBar | ⬜ Not Started | - | - | - | - |
+| POSDrawer | ⬜ Not Started | - | - | - | - |
+| POSBottomNav | ⬜ Not Started | - | - | - | - |
+| POSSelect | ⬜ Not Started | - | - | - | - |
+| POSCheckbox | ⬜ Not Started | - | - | - | - |
+| POSRadio | ⬜ Not Started | - | - | - | - |
+| POSSwitch | ⬜ Not Started | - | - | - | - |
+| POSDateField | ⬜ Not Started | - | - | - | - |
+| POSTimeField | ⬜ Not Started | - | - | - | - |
+| POSNumberPad | ⬜ Not Started | - | - | - | - |
+
+**Legend**: ✅ Pass | ⚠️ Needs Fix | ⬜ Not Started
+
+### Component Testing Metrics
+
+| Test Type | Target | Current | Status |
+|-----------|--------|---------|--------|
+| Touch Targets (48px min) | 100% | N/A | ⬜ Not Started |
+| WCAG 2.1 AA Compliance | 100% | N/A | ⬜ Not Started |
+| Keyboard Navigation | 100% | N/A | ⬜ Not Started |
+| Screen Reader Support | 100% | N/A | ⬜ Not Started |
+| Visual Regression | 100% | N/A | ⬜ Not Started |
+
+### Design System Milestones
+
+- [ ] m3-svelte installed
+- [ ] Design tokens package created
+- [ ] Material Theme generated (HOST brand #2563eb)
+- [ ] Tailwind CSS 4 integration complete
+- [ ] First component wrapper created
+- [ ] Component checklist documented
+- [ ] Design system guide (design-system.md) complete
+- [ ] Accessibility audit passed
+- [ ] Dark mode implemented
+- [ ] Order page migrated to MD3
+- [ ] Navigation migrated to MD3
+- [ ] Forms migrated to MD3
 
 ---
 
@@ -412,6 +478,7 @@ See [Architecture Decision Records (ADR)](./adr/README.md) for details.
 | 2025-09-29 | Tech Lead | Initial progress tracker created, Week 1 infrastructure 80% complete |
 | 2025-09-29 | Tech Lead | Added Guest loyalty app roadmap (v0.2-v0.3), 14 new user stories (US-018 to US-031) |
 | 2025-09-29 | Tech Lead | Added Industry Love competition feature (v0.3), 3 new user stories (US-032 to US-034) |
+| 2025-09-30 | Tech Lead | Material Design 3 integration planned (ADR-003), Week 2 roadmap updated, MD3 component tracking added |
 
 ---
 

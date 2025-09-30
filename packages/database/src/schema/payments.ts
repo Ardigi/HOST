@@ -6,8 +6,8 @@
 import { createId } from '@paralleldrive/cuid2';
 import { relations } from 'drizzle-orm';
 import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { orders } from './orders.js';
-import { venues } from './venues.js';
+import { orders } from './orders';
+import { venues } from './venues';
 
 export const payments = sqliteTable('payments', {
 	id: text('id')

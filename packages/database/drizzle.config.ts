@@ -7,11 +7,13 @@ if (!databaseUrl) {
 }
 
 export default defineConfig({
-	schema: './src/schema/index.ts',
+	schema: './src/schema/!(*.test).ts',
 	out: './drizzle',
 	dialect: 'turso',
 	dbCredentials: {
 		url: databaseUrl,
 		authToken: process.env.DATABASE_AUTH_TOKEN,
 	},
+	verbose: true,
+	strict: true,
 });

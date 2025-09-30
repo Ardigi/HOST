@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  # Keycloak Identity Server
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: host-keycloak
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=keycloak
+      - KC_HOSTNAME=localhost
+      - KC_HOSTNAME_PORT=8080
+      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_HTTP_ENABLED=true
+      - KC_HTTP_PORT=8080
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 3s
+      retries: 5
+      start_period: 60s
+    networks:
+      - host-network
+
+  # PostgreSQL for Keycloak
+  postgres:
+    image: postgres:16-alpine
+    container_name: host-postgres
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=keycloak
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - host-network
+
+  # Turso/LibSQL (Local SQLite Server)
+  turso-local:
+    image: ghcr.io/tursodatabase/libsql-server:latest
+    container_name: host-turso
+    ports:
+      - "8081:8080"
+    volumes:
+      - turso-data:/var/lib/sqld
+    environment:
+      - SQLD_NODE=primary
+    networks:
+      - host-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: host-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - host-network
+
+  # LocalStack for S3 simulation
+  localstack:
+    image: localstack/localstack:latest
+    container_name: host-localstack
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - localstack-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - host-network
+
+  # Mailhog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: host-mailhog
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    networks:
+      - host-network
+
+networks:
+  host-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  turso-data:
+    driver: local
+  redis-data:
+    driver: local
+  localstack-data:
+    driver: local

@@ -15,6 +15,7 @@ This directory contains comprehensive documentation for the HOST POS system, des
 
 ### Technical Architecture
 - **[architecture.md](architecture.md)** ⭐ - System architecture, design patterns, and technology stack
+- **[TECH_STACK_2025.md](TECH_STACK_2025.md)** ⭐ - Official versions, documentation links, and migration notes (2025)
 - **[02-technical-roadmap.md](02-technical-roadmap.md)** - 12-week development schedule with dependencies
 - **[03-database-schema.md](03-database-schema.md)** - Complete database design with Turso/LibSQL
 - **[04-api-specification.yaml](04-api-specification.yaml)** - OpenAPI 3.0 specification for all endpoints
@@ -23,6 +24,7 @@ This directory contains comprehensive documentation for the HOST POS system, des
 - **[test-strategy.md](test-strategy.md)** ⭐ - TDD framework, testing pyramid, coverage requirements
 - **[development-setup.md](development-setup.md)** ⭐ - Complete environment setup and configuration guide
 - **[user-stories.md](user-stories.md)** ⭐ - 17 detailed user stories with acceptance criteria
+- **[../CONTRIBUTING.md](../CONTRIBUTING.md)** ⭐ - TDD workflow and contribution guidelines
 
 ### Security & Compliance
 - **[security-authentication.md](security-authentication.md)** ⭐ - Auth flows, security layers, PCI compliance
@@ -30,7 +32,7 @@ This directory contains comprehensive documentation for the HOST POS system, des
 - **[accessibility-requirements.md](accessibility-requirements.md)** ⭐ - WCAG 2.1 AA compliance guidelines
 
 ### Market Analysis
-- **[07-competitive-analysis.md](07-competitive-analysis.md)** - Competitor analysis and differentiation
+- **[07-competitive-analysis.md](07-competitc:\Users\Ryann\Documents\Work\Design\Color Palettes\HOST.svgive-analysis.md)** - Competitor analysis and differentiation
 - **[08-innovation-features.md](08-innovation-features.md)** - Advanced features and future innovations
 
 ---
@@ -41,8 +43,10 @@ This directory contains comprehensive documentation for the HOST POS system, des
 
 1. **Start Here**:
    - Read [development-setup.md](development-setup.md) to configure your environment
+   - Review [TECH_STACK_2025.md](TECH_STACK_2025.md) for official versions and documentation links
    - Review [architecture.md](architecture.md) to understand the system design
    - Study [test-strategy.md](test-strategy.md) to understand our TDD approach
+   - Check [../CONTRIBUTING.md](../CONTRIBUTING.md) for TDD workflow and conventions
 
 2. **Before Coding**:
    - Review relevant [user-stories.md](user-stories.md) for your feature
@@ -151,6 +155,7 @@ The documentation suite is now complete and ready to support TDD implementation:
 ## 🔗 Related Resources
 
 ### External Documentation
+- **Technology Stack**: See [TECH_STACK_2025.md](TECH_STACK_2025.md) for all official documentation links
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [PCI DSS Requirements](https://www.pcisecuritystandards.org/)
 - [OpenAPI Specification](https://swagger.io/specification/)
@@ -213,8 +218,8 @@ The documentation suite is now complete and ready to support TDD implementation:
 
 ---
 
-*Last Updated: September 29, 2025*
-*Documentation Version: 0.1.0-alpha*
+*Last Updated: [Current Date]*
+*Documentation Version: 1.0.0*
 *Status: Complete and Ready for Implementation*
 
 ## Next Steps

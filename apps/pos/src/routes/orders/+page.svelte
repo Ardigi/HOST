@@ -46,25 +46,6 @@ $effect(() => {
 		padding: 2rem;
 	}
 
-	.filters {
-		display: flex;
-		gap: 0.5rem;
-		margin-top: 1rem;
-	}
-
-	.filters button {
-		padding: 0.5rem 1rem;
-		border: 1px solid #ccc;
-		background: white;
-		cursor: pointer;
-	}
-
-	.filters button.active {
-		background: #3b82f6;
-		color: white;
-		border-color: #3b82f6;
-	}
-
 	.orders-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -79,10 +60,5 @@ $effect(() => {
 		cursor: pointer;
 		text-align: left;
 		background: white;
-	}
-
-	.order-card.selected {
-		border-color: #3b82f6;
-		background: #eff6ff;
 	}
 </style>

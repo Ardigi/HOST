@@ -1,78 +1,35 @@
 import { faker } from '@faker-js/faker';
-import type { User, NewUser } from '@host/database';
+import type { User, UserRole } from '@host/types';
 
-/**
- * User Factory
- * Generates test data for users
- */
 export const userFactory = {
-	/**
-	 * Build a single user
-	 */
-	build: (overrides?: Partial<User>): User => ({
-		id: faker.string.uuid(),
-		venueId: faker.string.uuid(),
-		keycloakId: faker.string.uuid(),
-		email: faker.internet.email(),
-		firstName: faker.person.firstName(),
-		lastName: faker.person.lastName(),
-		phone: faker.phone.number(),
-		role: 'server',
-		pinCodeHash: faker.string.alphanumeric(64),
-		isActive: true,
-		createdAt: faker.date.past(),
-		updatedAt: faker.date.recent(),
-		...overrides,
-	}),
+  build: (overrides?: Partial<User>): User => ({
+    id: faker.string.uuid(),
+    email: faker.internet.email().toLowerCase(),
+    name: faker.person.fullName(),
+    phone: faker.phone.number(),
+    role: 'server' as UserRole,
+    venueId: faker.string.uuid(),
+    active: true,
+    emailVerified: true,
+    createdAt: faker.date.recent({ days: 30 }),
+    updatedAt: faker.date.recent({ days: 1 }),
+    lastLoginAt: faker.date.recent({ days: 7 }),
+    ...overrides,
+  }),
 
-	/**
-	 * Build multiple users
-	 */
-	buildList: (count: number, overrides?: Partial<User>): User[] =>
-		Array.from({ length: count }, () => userFactory.build(overrides)),
+  buildList: (count: number, overrides?: Partial<User>): User[] =>
+    Array.from({ length: count }, () => userFactory.build(overrides)),
 
-	/**
-	 * Build new user for insertion
-	 */
-	buildNew: (overrides?: Partial<NewUser>): NewUser => ({
-		venueId: faker.string.uuid(),
-		keycloakId: faker.string.uuid(),
-		email: faker.internet.email(),
-		firstName: faker.person.firstName(),
-		lastName: faker.person.lastName(),
-		phone: faker.phone.number(),
-		role: 'server',
-		pinCodeHash: faker.string.alphanumeric(64),
-		isActive: true,
-		...overrides,
-	}),
+  buildNew: (overrides?: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>): Omit<User, 'id' | 'createdAt' | 'updatedAt'> => {
+    const user = userFactory.build(overrides);
+    const { id, createdAt, updatedAt, ...newUser } = user;
+    return newUser;
+  },
 
-	/**
-	 * Build admin user
-	 */
-	buildAdmin: (overrides?: Partial<User>): User =>
-		userFactory.build({
-			role: 'admin',
-			email: 'admin@host-pos.com',
-			...overrides,
-		}),
-
-	/**
-	 * Build manager user
-	 */
-	buildManager: (overrides?: Partial<User>): User =>
-		userFactory.build({
-			role: 'manager',
-			email: 'manager@host-pos.com',
-			...overrides,
-		}),
-
-	/**
-	 * Build server user
-	 */
-	buildServer: (overrides?: Partial<User>): User =>
-		userFactory.build({
-			role: 'server',
-			...overrides,
-		}),
+  buildExisting: (overrides?: Partial<User>): User =>
+    userFactory.build({
+      createdAt: faker.date.past({ years: 1 }),
+      updatedAt: faker.date.recent({ days: 7 }),
+      ...overrides,
+    }),
 };

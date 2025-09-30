@@ -1,7 +1,3 @@
-/**
- * Test Factories
- * Centralized export for all test data factories
- */
-
-export * from './order.factory';
-export * from './user.factory';
+export { userFactory } from './user.factory';
+export { orderFactory } from './order.factory';
+export { menuItemFactory } from './menu-item.factory';

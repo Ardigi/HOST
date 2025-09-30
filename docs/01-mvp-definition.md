@@ -90,6 +90,29 @@ HOST v0.1 focuses on delivering a **production-ready, modern POS system** with e
 
 ## ❌ EXPLICITLY EXCLUDED (Post-MVP)
 
+### Customer-Facing Features (v0.2+)
+- **Guest Loyalty App** (Customer mobile app)
+  - Account creation and profiles
+  - Points earning and redemption system
+  - Digital loyalty cards
+  - Basic reservations via app
+  - QR code check-in
+  - Push notifications
+- **Special Guest Premium Tier** (v0.3+)
+  - Subscription-based premium membership
+  - Allocated spirits first access
+  - Priority reservation system
+  - Extended happy hour benefits
+  - Exclusive event invitations
+  - Points multiplier (2x)
+- **Industry Love Competition** (v0.3+)
+  - Monthly team-based competition for hospitality workers
+  - Industry staff affiliation and verification
+  - Visit-based scoring (not spend-based)
+  - Team leaderboards and rankings
+  - Automatic reward application for winners
+  - Viral growth through authentic advocacy
+
 ### Advanced Features (v0.2+)
 - Geofencing & customer recognition
 - AI/LLM integration for predictions
@@ -115,8 +138,7 @@ HOST v0.1 focuses on delivering a **production-ready, modern POS system** with e
 - Third-party delivery platforms
 - Accounting software sync
 - Marketing automation tools
-- Loyalty program management
-- Reservation systems
+- Guest app marketplace (allocation resale/trading)
 
 ---
 
@@ -163,12 +185,41 @@ HOST v0.1 focuses on delivering a **production-ready, modern POS system** with e
 ---
 
 ## Post-MVP Roadmap Preview
-- **v0.2** (Month 4-6): Customer recognition, basic AI features
-- **v0.3** (Month 7-9): Multi-venue, advanced analytics
-- **v0.4** (Month 10-12): Platform ecosystem, marketplace
+- **v0.2** (Month 4-6): **Guest loyalty app (free tier)**, customer recognition, basic AI features
+- **v0.3** (Month 7-9): **Special Guest premium tier**, **Industry Love competition**, allocation management, multi-venue, advanced analytics
+- **v0.4** (Month 10-12): Platform ecosystem, Guest marketplace, advanced integrations
 
 ---
 
-*Last Updated: September 29, 2025*
-*Version: 0.1.0-alpha*
-*Status: Ready for Technical Implementation*
+---
+
+## 🎁 Guest Rewards System Overview
+
+The **Guest** customer loyalty system is a key differentiator for HOST, launching in v0.2. It creates a two-tier membership model:
+
+### Guest (Free Tier) - v0.2
+- Points earning on all purchases
+- Digital loyalty card
+- Reward redemption
+- Order history and favorites
+- Standard reservations
+- Email receipts
+
+### Special Guest (Premium Tier) - v0.3
+- Monthly subscription ($19.99/month)
+- First access to allocated/rare spirits
+- Priority reservations (30 days out vs 14 days)
+- Extended happy hour pricing all day
+- 2x points multiplier
+- Exclusive events and tastings
+- Complimentary monthly perks
+
+**Business Model:** Subscription revenue + increased venue visits + higher spend per visit
+
+📖 **Full Specification:** See [guest-rewards-system.md](./guest-rewards-system.md)
+
+---
+
+*Last Updated: 2025-09-29*
+*Version: 0.2.0-alpha*
+*Status: Updated with Guest Loyalty System*

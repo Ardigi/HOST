@@ -1,9 +1,10 @@
 /**
- * Tailwind CSS 4.0 Configuration
+ * Tailwind CSS 4.0 Configuration + Material Design 3
  * Using CSS-first configuration with @theme directive
  */
 
 @import "tailwindcss";
+@import "./lib/theme.css";
 
 /**
  * Design Tokens

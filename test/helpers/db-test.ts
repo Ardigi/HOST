@@ -149,6 +149,116 @@ async function createTables(client: Client): Promise<void> {
 			created_at INTEGER NOT NULL
 		)
 	`);
+
+	// Create inventory_items table
+	await client.execute(`
+		CREATE TABLE IF NOT EXISTS inventory_items (
+			id TEXT PRIMARY KEY,
+			venue_id TEXT NOT NULL REFERENCES venues(id) ON DELETE CASCADE,
+			name TEXT NOT NULL,
+			sku TEXT,
+			barcode TEXT,
+			category TEXT NOT NULL CHECK(category IN ('liquor', 'beer', 'wine', 'food', 'supplies')),
+			subcategory TEXT,
+			unit_type TEXT NOT NULL CHECK(unit_type IN ('bottle', 'case', 'keg', 'pound', 'each', 'gallon', 'liter')),
+			unit_size REAL,
+			unit_size_uom TEXT,
+			units_per_case INTEGER,
+			quantity_on_hand REAL NOT NULL DEFAULT 0,
+			par_level REAL,
+			reorder_point REAL,
+			reorder_quantity REAL,
+			unit_cost REAL NOT NULL,
+			case_cost REAL,
+			last_cost REAL,
+			average_cost REAL,
+			primary_vendor TEXT,
+			vendor_item_code TEXT,
+			storage_location TEXT,
+			storage_temp TEXT CHECK(storage_temp IN ('room', 'cooler', 'freezer')),
+			created_at INTEGER NOT NULL,
+			updated_at INTEGER NOT NULL
+		)
+	`);
+
+	// Create inventory_transactions table
+	await client.execute(`
+		CREATE TABLE IF NOT EXISTS inventory_transactions (
+			id TEXT PRIMARY KEY,
+			venue_id TEXT NOT NULL REFERENCES venues(id) ON DELETE CASCADE,
+			inventory_item_id TEXT NOT NULL REFERENCES inventory_items(id) ON DELETE CASCADE,
+			transaction_type TEXT NOT NULL CHECK(transaction_type IN ('purchase', 'usage', 'adjustment', 'waste', 'transfer')),
+			quantity_change REAL NOT NULL,
+			balance_after REAL NOT NULL,
+			reference_type TEXT,
+			reference_id TEXT,
+			reason TEXT,
+			unit_cost_at_time REAL,
+			performed_by TEXT NOT NULL,
+			created_at INTEGER NOT NULL
+		)
+	`);
+
+	// Create inventory_suppliers table
+	await client.execute(`
+		CREATE TABLE IF NOT EXISTS inventory_suppliers (
+			id TEXT PRIMARY KEY,
+			venue_id TEXT NOT NULL REFERENCES venues(id) ON DELETE CASCADE,
+			name TEXT NOT NULL,
+			contact_name TEXT NOT NULL,
+			email TEXT NOT NULL,
+			phone TEXT,
+			address TEXT,
+			city TEXT,
+			state TEXT,
+			zip_code TEXT,
+			account_number TEXT,
+			payment_terms TEXT,
+			minimum_order REAL,
+			delivery_days TEXT,
+			is_active INTEGER NOT NULL DEFAULT 1,
+			notes TEXT,
+			created_at INTEGER NOT NULL,
+			updated_at INTEGER NOT NULL
+		)
+	`);
+
+	// Create inventory_purchase_orders table
+	await client.execute(`
+		CREATE TABLE IF NOT EXISTS inventory_purchase_orders (
+			id TEXT PRIMARY KEY,
+			venue_id TEXT NOT NULL REFERENCES venues(id) ON DELETE CASCADE,
+			supplier_id TEXT NOT NULL REFERENCES inventory_suppliers(id),
+			order_number TEXT NOT NULL,
+			status TEXT NOT NULL DEFAULT 'draft' CHECK(status IN ('draft', 'submitted', 'received', 'cancelled')),
+			order_date INTEGER NOT NULL,
+			expected_delivery_date INTEGER,
+			actual_delivery_date INTEGER,
+			subtotal REAL NOT NULL DEFAULT 0,
+			tax REAL NOT NULL DEFAULT 0,
+			shipping_cost REAL NOT NULL DEFAULT 0,
+			total REAL NOT NULL DEFAULT 0,
+			notes TEXT,
+			received_by TEXT,
+			created_at INTEGER NOT NULL,
+			updated_at INTEGER NOT NULL
+		)
+	`);
+
+	// Create inventory_purchase_order_items table
+	await client.execute(`
+		CREATE TABLE IF NOT EXISTS inventory_purchase_order_items (
+			id TEXT PRIMARY KEY,
+			purchase_order_id TEXT NOT NULL REFERENCES inventory_purchase_orders(id) ON DELETE CASCADE,
+			inventory_item_id TEXT NOT NULL REFERENCES inventory_items(id),
+			quantity_ordered REAL NOT NULL,
+			quantity_received REAL NOT NULL DEFAULT 0,
+			unit_cost REAL NOT NULL,
+			total_cost REAL NOT NULL,
+			notes TEXT,
+			created_at INTEGER NOT NULL
+		)
+	`);
 }
 
 /**

@@ -654,7 +654,7 @@ And no data should be lost
 
 ---
 
-*Last Updated: [Current Date]*
-*Version: 1.0.0*
+*Last Updated: September 29, 2025*
+*Version: 0.1.0-alpha*
 *Total User Stories: 17*
 *Total Test Cases: 180+*

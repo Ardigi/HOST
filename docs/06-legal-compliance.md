@@ -406,6 +406,6 @@ Operating a hospitality business with alcohol service in Texas requires complian
 
 ---
 
-*Last Updated: [Date]*
-*Document Version: 1.0*
+*Last Updated: September 29, 2025*
+*Document Version: 0.1.0-alpha*
 *Disclaimer: This guide provides general information. Consult legal counsel for specific requirements.*

@@ -57,14 +57,19 @@ cp apps/admin/.env.example apps/admin/.env.local
 ```
 
 ### 4. Database Setup
-```bash
-# Start local database (Docker)
-docker-compose up -d turso-local
 
-# Or use Turso cloud (recommended for development)
-# 1. Sign up at https://turso.tech
-# 2. Create a database
-# 3. Get your connection URL and auth token
+#### Database Development Workflow
+
+**Choose Your Development Strategy:**
+
+**Option 1: Local SQLite (Quickstart)**
+```bash
+# Best for: Offline development, testing, rapid prototyping
+# Uses: Local file:./dev.db
+
+# Set in apps/pos/.env.local
+DATABASE_URL=file:./dev.db
+# No auth token needed
 
 # Run migrations
 npm run db:migrate
@@ -72,6 +77,79 @@ npm run db:migrate
 # Seed development data
 npm run db:seed
 ```
+
+**Option 2: Turso Local (Docker)**
+```bash
+# Best for: Testing sync behavior, multi-tab testing
+# Uses: libSQL server in Docker
+
+# Start Turso local server
+docker-compose up -d turso-local
+
+# Set in apps/pos/.env.local
+DATABASE_URL=libsql://127.0.0.1:8081
+# No auth token for local
+
+# Run migrations
+npm run db:migrate
+
+# Seed development data
+npm run db:seed
+```
+
+**Option 3: Turso Cloud (Recommended for Team Development)**
+```bash
+# Best for: Team collaboration, testing production behavior
+# Uses: Turso hosted database with edge replication
+
+# 1. Sign up at https://turso.tech
+turso auth signup
+
+# 2. Create a database
+turso db create host-dev
+
+# 3. Get connection details
+turso db show host-dev --url
+turso db tokens create host-dev
+
+# 4. Set in apps/pos/.env.local
+DATABASE_URL=libsql://your-db.turso.io
+DATABASE_AUTH_TOKEN=your-token-here
+
+# Optional: Enable sync for offline testing
+TURSO_SYNC_URL=libsql://your-db.turso.io  # Cloud database URL
+TURSO_SYNC_INTERVAL=60  # Sync every 60 seconds
+
+# Run migrations
+npm run db:migrate
+
+# Seed development data
+npm run db:seed
+```
+
+#### Understanding TURSO_SYNC_URL
+
+The `TURSO_SYNC_URL` enables **embedded replica** mode:
+
+- **Local-First**: App uses local SQLite database
+- **Background Sync**: Changes sync to cloud every `TURSO_SYNC_INTERVAL` seconds
+- **Offline Support**: App works fully offline, syncs when reconnected
+- **Conflict Resolution**: Last-write-wins by default
+
+**When to use sync:**
+- ✅ Testing offline mode functionality
+- ✅ Developing multi-device features
+- ✅ Simulating production edge behavior
+- ❌ Simple CRUD development (use local SQLite)
+- ❌ Schema migrations (use direct connection)
+
+#### Migration Path
+
+**Development Flow:**
+1. **Start**: Local SQLite (`file:./dev.db`)
+2. **Team Sync**: Upgrade to Turso Cloud for collaboration
+3. **Offline Testing**: Enable `TURSO_SYNC_URL` for embedded replicas
+4. **Production**: Use Turso Cloud with global replication
 
 ### 5. Install Biome for Linting
 ```bash
@@ -742,6 +820,6 @@ npm run deps:check
 
 ---
 
-*Last Updated: [Current Date]*
-*Version: 1.0.0*
+*Last Updated: September 29, 2025*
+*Version: 0.1.0-alpha*
 *Maintained by: HOST Development Team*

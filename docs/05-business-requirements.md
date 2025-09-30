@@ -254,6 +254,6 @@ General Manager
 
 ---
 
-*Last Updated: [Date]*
-*Document Version: 1.0*
+*Last Updated: September 29, 2025*
+*Document Version: 0.1.0-alpha*
 *Status: Ready for Implementation Planning*

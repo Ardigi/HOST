@@ -649,10 +649,11 @@ export function requireVenueAccess(req: Request, res: Response, next: NextFuncti
 }
 ```
 
-### Frontend Integration (React)
+### Frontend Integration (Svelte 5 + SvelteKit)
 ```typescript
-// apps/web/src/auth/keycloak.ts
+// apps/web/src/lib/auth/keycloak.ts
 import Keycloak from 'keycloak-js';
+import { browser } from '$app/environment';
 
 const keycloakConfig = {
   url: import.meta.env.VITE_KEYCLOAK_URL,
@@ -660,10 +661,12 @@ const keycloakConfig = {
   clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID
 };
 
-export const keycloak = new Keycloak(keycloakConfig);
+export const keycloak = browser ? new Keycloak(keycloakConfig) : null;
 
 // Initialize Keycloak
 export async function initKeycloak() {
+  if (!browser || !keycloak) return false;
+
   try {
     const authenticated = await keycloak.init({
       onLoad: 'check-sso',
@@ -674,7 +677,6 @@ export async function initKeycloak() {
     });
 
     if (authenticated) {
-      console.log('User is authenticated');
       sessionStorage.setItem('keycloak-token', keycloak.token!);
 
       // Setup token refresh
@@ -682,13 +684,11 @@ export async function initKeycloak() {
         keycloak.updateToken(300).then((refreshed) => {
           if (refreshed) {
             sessionStorage.setItem('keycloak-token', keycloak.token!);
-            console.log('Token refreshed');
           }
         }).catch(() => {
-          console.error('Failed to refresh token');
           keycloak.logout();
         });
-      }, 60000); // Check every minute
+      }, 60000);
     }
 
     return authenticated;
@@ -698,87 +698,102 @@ export async function initKeycloak() {
   }
 }
 
-// Custom hook for React
-import { useEffect, useState } from 'react';
+// Svelte 5 rune-based auth store
+// apps/web/src/lib/stores/auth.svelte.ts
+import { keycloak } from '$lib/auth/keycloak';
+import type { User } from '$lib/types';
 
-export function useKeycloak() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState(null);
+class AuthState {
+  isAuthenticated = $state(false);
+  isLoading = $state(true);
+  user = $state<User | null>(null);
+  token = $state<string | null>(null);
 
-  useEffect(() => {
-    initKeycloak().then((auth) => {
-      setIsAuthenticated(auth);
-      if (auth && keycloak.tokenParsed) {
-        setUser({
-          id: keycloak.tokenParsed.sub,
-          email: keycloak.tokenParsed.email,
-          name: keycloak.tokenParsed.name,
-          roles: keycloak.tokenParsed.realm_access?.roles || []
-        });
-      }
-      setIsLoading(false);
-    });
-  }, []);
+  async init() {
+    const auth = await initKeycloak();
+    this.isAuthenticated = auth;
 
-  const login = () => keycloak.login();
-  const logout = () => keycloak.logout();
-  const register = () => keycloak.register();
+    if (auth && keycloak?.tokenParsed) {
+      this.user = {
+        id: keycloak.tokenParsed.sub,
+        email: keycloak.tokenParsed.email,
+        name: keycloak.tokenParsed.name,
+        roles: keycloak.tokenParsed.realm_access?.roles || []
+      };
+      this.token = keycloak.token || null;
+    }
 
-  return {
-    isAuthenticated,
-    isLoading,
-    user,
-    token: keycloak.token,
-    login,
-    logout,
-    register,
-    keycloak
-  };
+    this.isLoading = false;
+  }
+
+  login() {
+    keycloak?.login();
+  }
+
+  logout() {
+    keycloak?.logout();
+  }
+
+  register() {
+    keycloak?.register();
+  }
 }
 
-// API interceptor for token attachment
-import axios from 'axios';
+export const authState = new AuthState();
+```
 
-axios.interceptors.request.use(
-  (config) => {
-    const token = sessionStorage.getItem('keycloak-token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+```svelte
+<!-- apps/web/src/routes/+layout.svelte -->
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { authState } from '$lib/stores/auth.svelte';
 
-axios.interceptors.response.use(
-  (response) => {
-    // Check if token refresh is needed
-    if (response.headers['x-token-refresh-required']) {
-      keycloak.updateToken(300);
-    }
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
+  onMount(() => {
+    authState.init();
+  });
+</script>
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+{#if authState.isLoading}
+  <div>Loading...</div>
+{:else if !authState.isAuthenticated}
+  <button onclick={() => authState.login()}>Login</button>
+{:else}
+  <slot />
+{/if}
+```
 
-      try {
-        await keycloak.updateToken(5);
-        sessionStorage.setItem('keycloak-token', keycloak.token!);
-        originalRequest.headers.Authorization = `Bearer ${keycloak.token}`;
-        return axios(originalRequest);
-      } catch {
-        keycloak.logout();
-        return Promise.reject(error);
-      }
-    }
+```typescript
+// apps/web/src/hooks.client.ts - API interceptor for SvelteKit
+import { keycloak } from '$lib/auth/keycloak';
 
-    return Promise.reject(error);
+export async function handleFetch({ request, fetch }) {
+  const token = keycloak?.token;
+
+  if (token) {
+    request.headers.set('Authorization', `Bearer ${token}`);
   }
-);
+
+  const response = await fetch(request);
+
+  // Handle token refresh
+  if (response.headers.get('x-token-refresh-required')) {
+    await keycloak?.updateToken(300);
+  }
+
+  // Handle 401 errors
+  if (response.status === 401 && keycloak) {
+    try {
+      await keycloak.updateToken(5);
+      // Retry request with new token
+      request.headers.set('Authorization', `Bearer ${keycloak.token}`);
+      return fetch(request);
+    } catch {
+      keycloak.logout();
+    }
+  }
+
+  return response;
+}
 ```
 
 ### PIN Authentication Implementation
@@ -1455,7 +1470,7 @@ export async function migrateToKeycloak() {
 
 ---
 
-*Last Updated: September 28, 2025*
+*Last Updated: September 29, 2025*
 *Version: 2.0.0*
 *Security Level: Confidential*
 *Authentication: Keycloak 25.0 LTS*

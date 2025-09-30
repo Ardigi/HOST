@@ -72,6 +72,13 @@ HOST v0.1 focuses on delivering a **production-ready, modern POS system** with e
   - Basic inventory reports
 
 ### Technical Foundation
+- **Authentication Infrastructure**
+  - Keycloak SSO integration
+  - PIN-based quick login
+  - Session management and token refresh
+  - Role-based access control (RBAC)
+  - Secure credential storage
+
 - **Performance Requirements**
   - Sub-100ms order processing
   - 99.9% uptime target
@@ -138,10 +145,12 @@ HOST v0.1 focuses on delivering a **production-ready, modern POS system** with e
 
 ---
 
-## MVP Timeline
-- **Month 1**: Foundation & core POS
-- **Month 2**: Payments & inventory
-- **Month 3**: Polish & beta deployment
+## MVP Timeline (12 Weeks)
+- **Weeks 1-2**: Authentication infrastructure (Keycloak, PostgreSQL, PIN authenticator)
+- **Weeks 3-5**: Foundation & core POS functionality
+- **Weeks 6-8**: Payments, inventory, and offline mode
+- **Weeks 9-10**: Reporting, analytics, and cocktail cost calculator
+- **Weeks 11-12**: Polish, testing, and beta deployment
 
 ---
 
@@ -160,5 +169,6 @@ HOST v0.1 focuses on delivering a **production-ready, modern POS system** with e
 
 ---
 
-*Last Updated: [Date]*
+*Last Updated: September 29, 2025*
+*Version: 0.1.0-alpha*
 *Status: Ready for Technical Implementation*

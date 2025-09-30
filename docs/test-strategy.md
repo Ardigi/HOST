@@ -52,30 +52,38 @@
 
 ## Test Coverage Requirements
 
-### Minimum Coverage Targets
+### Unified Coverage Standards
+
+**Minimum Coverage Targets** (Enforced by CI):
 ```javascript
 // vitest.config.ts coverage thresholds
 {
-  branches: 80,
-  functions: 80,
-  lines: 85,
-  statements: 85
+  branches: 80,    // Minimum 80%
+  functions: 80,   // Minimum 80%
+  lines: 85,       // Target 85%
+  statements: 85   // Target 85%
 }
 ```
 
-### Component-Specific Targets
+**Component-Specific Targets**:
 
-| Component Type | Coverage Target | Priority |
-|---------------|-----------------|----------|
-| Authentication | 95% | Critical |
-| Payment Processing | 95% | Critical |
-| Order Management | 90% | Critical |
-| Database Layer | 90% | High |
-| API Endpoints | 100% | High |
-| Business Logic | 90% | High |
-| UI Components | 85% | Medium |
-| Utility Functions | 100% | Medium |
-| Reports | 80% | Low |
+| Component Type | Minimum | Target | Priority | Rationale |
+|---------------|---------|--------|----------|-----------|
+| Authentication | 85% | 95% | Critical | Security-critical |
+| Payment Processing | 85% | 95% | Critical | Financial accuracy |
+| Order Management | 85% | 90% | Critical | Core business logic |
+| Database Layer | 85% | 90% | High | Data integrity |
+| API Endpoints | 85% | 90% | High | Contract validation |
+| Business Logic | 80% | 85% | High | Complex calculations |
+| UI Components | 80% | 85% | Medium | User-facing features |
+| Utility Functions | 85% | 90% | Medium | Reused across app |
+| Reports | 80% | 85% | Medium | Analytics accuracy |
+
+**Coverage Philosophy**:
+- **80% Minimum**: All code must meet this baseline
+- **85% Target**: Goal for production readiness
+- **90%+ Critical Paths**: Authentication, payments, orders
+- **100% Exceptions**: Security utilities, payment calculators
 
 ---
 
@@ -154,20 +162,30 @@ describe('POST /api/orders', () => {
 ### 3. E2E Tests
 **Location**: `e2e/*.spec.ts`
 **Scope**: Complete user workflows
+**Framework**: Playwright
+
+#### Infrastructure Timeline
+E2E testing infrastructure will be established in **Weeks 9-10** of the MVP timeline:
+
+- **Week 9**: Playwright setup, authentication test utilities, CI integration
+- **Week 10**: Critical path tests (order flow, payment processing)
+- **Weeks 11-12**: Extended coverage (inventory, shift management, reports)
+
+**Note**: E2E tests are developed **after** core features are implemented and integration tests are passing. This ensures stable functionality before testing complete user workflows.
 
 #### Critical E2E Scenarios
-1. **Order Flow**
+1. **Order Flow** (Week 10 - Priority 1)
    - Login → Create order → Add items → Process payment → Close order
 
-2. **Payment Processing**
+2. **Payment Processing** (Week 10 - Priority 1)
    - Card payment → Receipt generation
    - Cash payment → Change calculation
    - Split check → Multiple payments
 
-3. **Inventory Flow**
+3. **Inventory Flow** (Week 11 - Priority 2)
    - Receive stock → Track depletion → Generate alerts
 
-4. **Shift Management**
+4. **Shift Management** (Week 11 - Priority 2)
    - Clock in → Process orders → Clock out → View report
 
 ---
@@ -609,6 +627,6 @@ describe('Order Creation', () => {
 
 ---
 
-*Last Updated: [Current Date]*
-*Version: 1.0.0*
+*Last Updated: September 29, 2025*
+*Version: 0.1.0-alpha*
 *Status: Active*

@@ -605,6 +605,47 @@ Turso is the ideal database for HOST POS because:
 6. **Real-time Sync**: Built-in replication for offline-first capabilities
 7. **Developer Experience**: Works locally with zero config, scales globally with one command
 
+### Sync Architecture: Embedded Replicas
+
+Turso's embedded replicas enable **local-first architecture** with cloud synchronization:
+
+```
+┌─────────────────────────────────────────────────────┐
+│  POS Terminal (Edge Device)                         │
+│                                                     │
+│  ┌─────────────────┐      ┌──────────────────┐    │
+│  │ Local SQLite DB │◄────►│ LibSQL Client    │    │
+│  │ (Embedded Replica)│     │ (Sync Engine)    │    │
+│  └─────────────────┘      └──────────────────┘    │
+│           │                        │               │
+│           │ Read/Write            │ Sync          │
+│           │ (Instant)             │ (Background)  │
+└───────────┼────────────────────────┼───────────────┘
+            │                        │
+            ▼                        ▼
+      Local Transactions      ┌─────────────┐
+      (Zero Latency)          │ Turso Cloud │
+                              │ (Primary DB)│
+                              └─────────────┘
+                                     │
+                              Replication
+                                     │
+                        ┌────────────┴────────────┐
+                        ▼                         ▼
+                 ┌─────────────┐          ┌─────────────┐
+                 │ Edge Region │          │ Edge Region │
+                 │   (Replica) │          │   (Replica) │
+                 └─────────────┘          └─────────────┘
+```
+
+**How Sync Works:**
+
+1. **Local Writes**: All transactions write to local embedded replica (instant)
+2. **Background Sync**: Changes batch sync to cloud every 60 seconds
+3. **Conflict Resolution**: Last-write-wins with vector clocks
+4. **Offline Mode**: Queue transactions locally, sync when reconnected
+5. **Multi-Device**: Cloud primary propagates to all embedded replicas
+
 ### Connection Management
 ```typescript
 // packages/database/client.ts
@@ -614,10 +655,11 @@ import * as schema from './schema';
 
 export function createDatabase(url: string, authToken?: string) {
   const client = createClient({
-    url,
-    authToken,
-    syncUrl: process.env.TURSO_SYNC_URL,
-    syncInterval: 60, // Sync every 60 seconds for real-time updates
+    url,                    // Local: file:./local.db | Remote: libsql://your-db.turso.io
+    authToken,              // Required for remote Turso connections
+    syncUrl: process.env.TURSO_SYNC_URL,  // Cloud primary for sync
+    syncInterval: 60,       // Sync every 60 seconds (background)
+    encryptionKey: process.env.DB_ENCRYPTION_KEY, // Optional local encryption
   });
 
   return drizzle(client, { schema });
@@ -625,10 +667,35 @@ export function createDatabase(url: string, authToken?: string) {
 
 // Connection pool for different environments
 export const db = createDatabase(
-  process.env.DATABASE_URL!,
-  process.env.DATABASE_AUTH_TOKEN
+  process.env.DATABASE_URL!,      // Local embedded replica
+  process.env.DATABASE_AUTH_TOKEN // Cloud auth token
 );
 ```
+
+**Configuration Examples:**
+
+```bash
+# Local Development (No sync)
+DATABASE_URL=file:./dev.db
+
+# Local-First with Cloud Sync (Recommended for Production)
+DATABASE_URL=file:./pos-terminal.db
+TURSO_SYNC_URL=libsql://your-db-main.turso.io
+DATABASE_AUTH_TOKEN=your-turso-token
+TURSO_SYNC_INTERVAL=60
+
+# Cloud-Only (Simple, but higher latency)
+DATABASE_URL=libsql://your-db-main.turso.io
+DATABASE_AUTH_TOKEN=your-turso-token
+```
+
+**Sync Benefits for POS:**
+
+- ✅ **Zero-Latency Reads/Writes**: All queries hit local SQLite
+- ✅ **Offline Resilience**: Internet outage doesn't stop service
+- ✅ **Automatic Cloud Backup**: Every transaction syncs to cloud
+- ✅ **Multi-Location Support**: Each venue has local replica + cloud sync
+- ✅ **Real-Time Reporting**: Cloud primary aggregates data across all locations
 
 ### Migration Strategy
 ```typescript
@@ -1493,7 +1560,7 @@ export class PerformanceMonitor {
 
 ---
 
-*Last Updated: September 28, 2025*
+*Last Updated: September 29, 2025*
 *Version: 2.0.0*
 *Status: Active*
 *Architecture: Microservices with Keycloak SSO*

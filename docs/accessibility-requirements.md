@@ -363,112 +363,128 @@ export function createMenuKeyboardNav(items: MenuItem[]) {
 ```svelte
 <!-- OrderStatus.svelte -->
 <script lang="ts">
-  import { onMount } from 'svelte';
   import LiveRegion from './LiveRegion.svelte';
 
-  export let order: Order;
-  let announcement = '';
+  interface Props {
+    order: Order;
+  }
 
-  $: {
+  let { order }: Props = $props();
+  let announcement = $state('');
+
+  function setAnnouncement(msg: string) {
+    announcement = msg;
+  }
+
+  $effect(() => {
     setAnnouncement(`Order ${order.number} status changed to ${order.status}`);
-  }, [order.status]);
+  });
+</script>
 
-  return (
-    <>
-      <div className="order-status">
-        Status: {order.status}
-      </div>
-      <LiveRegion message={announcement} priority="polite" />
-    </>
-  );
-}
+<div class="order-status">
+  Status: {order.status}
+</div>
+<LiveRegion message={announcement} priority="polite" />
 ```
 
 ### Semantic HTML
-```tsx
-// Use semantic HTML elements
-export const OrderList: React.FC = () => (
-  <main id="main-content">
-    <header>
-      <h1>Active Orders</h1>
-      <p id="order-count">Showing 12 orders</p>
-    </header>
+```svelte
+<!-- OrderList.svelte -->
+<script lang="ts">
+  interface Props {
+    orders: Order[];
+  }
 
-    <nav aria-label="Order filters">
-      <ul role="list">
-        <li><button>All Orders</button></li>
-        <li><button>Open</button></li>
-        <li><button>In Progress</button></li>
-      </ul>
-    </nav>
+  let { orders }: Props = $props();
+</script>
 
-    <section aria-labelledby="order-list-heading" aria-describedby="order-count">
-      <h2 id="order-list-heading" className="sr-only">
-        Order List
-      </h2>
+<main id="main-content">
+  <header>
+    <h1>Active Orders</h1>
+    <p id="order-count">Showing {orders.length} orders</p>
+  </header>
 
-      <ul role="list" aria-label="Orders">
-        {orders.map(order => (
-          <li key={order.id}>
-            <article aria-labelledby={`order-${order.id}`}>
-              <h3 id={`order-${order.id}`}>
-                Order #{order.number}
-              </h3>
-              {/* Order content */}
-            </article>
-          </li>
-        ))}
-      </ul>
-    </section>
-  </main>
-);
+  <nav aria-label="Order filters">
+    <ul role="list">
+      <li><button>All Orders</button></li>
+      <li><button>Open</button></li>
+      <li><button>In Progress</button></li>
+    </ul>
+  </nav>
+
+  <section aria-labelledby="order-list-heading" aria-describedby="order-count">
+    <h2 id="order-list-heading" class="sr-only">
+      Order List
+    </h2>
+
+    <ul role="list" aria-label="Orders">
+      {#each orders as order (order.id)}
+        <li>
+          <article aria-labelledby="order-{order.id}">
+            <h3 id="order-{order.id}">
+              Order #{order.number}
+            </h3>
+            <!-- Order content -->
+          </article>
+        </li>
+      {/each}
+    </ul>
+  </section>
+</main>
 ```
 
 ### Form Accessibility
-```tsx
-// Accessible form components
-export const AccessibleInput: React.FC<{
-  label: string;
-  error?: string;
-  required?: boolean;
-  helpText?: string;
-}> = ({ label, error, required, helpText, ...props }) => {
-  const inputId = `input-${label.toLowerCase().replace(/\s/g, '-')}`;
-  const errorId = `${inputId}-error`;
-  const helpId = `${inputId}-help`;
+```svelte
+<!-- AccessibleInput.svelte -->
+<script lang="ts">
+  interface Props {
+    label: string;
+    error?: string;
+    required?: boolean;
+    helpText?: string;
+    value?: string;
+  }
 
-  return (
-    <div className="form-field">
-      <label htmlFor={inputId}>
-        {label}
-        {required && <span aria-label="required">*</span>}
-      </label>
+  let { label, error, required, helpText, value = $bindable(''), ...restProps }: Props = $props();
 
-      {helpText && (
-        <p id={helpId} className="help-text">
-          {helpText}
-        </p>
-      )}
+  const inputId = $derived(`input-${label.toLowerCase().replace(/\s/g, '-')}`);
+  const errorId = $derived(`${inputId}-error`);
+  const helpId = $derived(`${inputId}-help`);
 
-      <input
-        id={inputId}
-        aria-required={required}
-        aria-invalid={!!error}
-        aria-describedby={[
-          helpText && helpId,
-          error && errorId,
-        ].filter(Boolean).join(' ')}
-        {...props}
-      />
-
-      {error && (
-        <p id={errorId} role="alert" className="error-message">
-          <span className="sr-only">Error:</span> {error}
-        </p>
-      )}
-    </div>
+  const describedBy = $derived(
+    [helpText && helpId, error && errorId].filter(Boolean).join(' ')
   );
-};
+</script>
+
+<div class="form-field">
+  <label for={inputId}>
+    {label}
+    {#if required}
+      <span aria-label="required">*</span>
+    {/if}
+  </label>
+
+  {#if helpText}
+    <p id={helpId} class="help-text">
+      {helpText}
+    </p>
+  {/if}
+
+  <input
+    id={inputId}
+    bind:value
+    aria-required={required}
+    aria-invalid={!!error}
+    aria-describedby={describedBy || undefined}
+    {...restProps}
+  />
+
+  {#if error}
+    <p id={errorId} role="alert" class="error-message">
+      <span class="sr-only">Error:</span> {error}
+    </p>
+  {/if}
+</div>
 ```
 
 ---
@@ -838,6 +854,6 @@ interface ComponentAccessibilityRequirements {
 
 ---
 
-*Last Updated: [Current Date]*
-*Version: 1.0.0*
+*Last Updated: September 29, 2025*
+*Version: 0.1.0-alpha*
 *Compliance Level: WCAG 2.1 AA*

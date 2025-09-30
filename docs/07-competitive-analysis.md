@@ -402,6 +402,6 @@ The hospitality POS market is dominated by five major players: **Toast, Square, 
 
 ---
 
-*Last Updated: [Date]*
-*Document Version: 1.0*
+*Last Updated: September 29, 2025*
+*Document Version: 0.1.0-alpha*
 *Competitive Intelligence Summary*

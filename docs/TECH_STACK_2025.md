@@ -9,6 +9,7 @@ This document lists the official versions and documentation sources for all tech
 - **Official Docs**: https://svelte.dev/docs/svelte
 - **Key Features**: Runes (`$state`, `$derived`, `$effect`), fine-grained reactivity
 - **Migration Guide**: https://svelte.dev/docs/svelte/v5-migration-guide
+- **HOST Guide**: [Svelte 5 Runes Guide](svelte-5-runes-guide.md) - Complete reference with POS examples
 
 ### SvelteKit 2.x
 - **Version**: 2.15.2+

@@ -1,0 +1,1776 @@
+openapi: 3.0.3
+info:
+  title: HOST - Hospitality Operating System Technology API
+  description: Complete API specification for HOST POS system MVP
+  version: 0.1.0
+  contact:
+    name: HOST Development Team
+    email: api@pour-people.com
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.host-pos.com/v1
+    description: Production server
+  - url: https://staging-api.host-pos.com/v1
+    description: Staging server
+  - url: http://localhost:3000/v1
+    description: Development server
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Venues
+    description: Venue management operations
+  - name: Users
+    description: User and staff management
+  - name: Menu
+    description: Menu categories and items management
+  - name: Orders
+    description: Order creation and management
+  - name: Payments
+    description: Payment processing operations
+  - name: Inventory
+    description: Inventory tracking and management
+  - name: Reports
+    description: Analytics and reporting endpoints
+  - name: Shifts
+    description: Staff shift management
+
+security:
+  - BearerAuth: []
+  - SessionToken: []
+
+paths:
+  # Authentication Endpoints
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - venueId
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                venueId:
+                  type: string
+                rememberMe:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /auth/login-pin:
+    post:
+      tags:
+        - Authentication
+      summary: Quick login with PIN
+      operationId: loginPin
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pin
+                - venueId
+              properties:
+                pin:
+                  type: string
+                  pattern: '^[0-9]{4,6}$'
+                venueId:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout current user
+      operationId: logout
+      responses:
+        '200':
+          description: Logout successful
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh authentication token
+      operationId: refreshToken
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # User Management
+  /users:
+    get:
+      tags:
+        - Users
+      summary: List all users for venue
+      operationId: listUsers
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageNumber'
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [admin, manager, server, bartender, host, kitchen]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive, terminated]
+      responses:
+        '200':
+          description: Users retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+
+    post:
+      tags:
+        - Users
+      summary: Create new user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /users/{userId}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      operationId: getUser
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: User retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - Users
+      summary: Update user
+      operationId: updateUser
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Menu Management
+  /menu/categories:
+    get:
+      tags:
+        - Menu
+      summary: List menu categories
+      operationId: listCategories
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - name: activeOnly
+          in: query
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: Categories retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuCategory'
+
+    post:
+      tags:
+        - Menu
+      summary: Create menu category
+      operationId: createCategory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        '201':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuCategory'
+
+  /menu/items:
+    get:
+      tags:
+        - Menu
+      summary: List menu items
+      operationId: listMenuItems
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - name: categoryId
+          in: query
+          schema:
+            type: string
+        - name: activeOnly
+          in: query
+          schema:
+            type: boolean
+            default: true
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Menu items retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItem'
+
+    post:
+      tags:
+        - Menu
+      summary: Create menu item
+      operationId: createMenuItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMenuItemRequest'
+      responses:
+        '201':
+          description: Menu item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+
+  /menu/items/{itemId}:
+    get:
+      tags:
+        - Menu
+      summary: Get menu item by ID
+      operationId: getMenuItem
+      parameters:
+        - $ref: '#/components/parameters/ItemId'
+      responses:
+        '200':
+          description: Menu item retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - Menu
+      summary: Update menu item
+      operationId: updateMenuItem
+      parameters:
+        - $ref: '#/components/parameters/ItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMenuItemRequest'
+      responses:
+        '200':
+          description: Menu item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+
+  /menu/items/{itemId}/86:
+    post:
+      tags:
+        - Menu
+      summary: Mark item as 86'd (out of stock)
+      operationId: mark86
+      parameters:
+        - $ref: '#/components/parameters/ItemId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is86:
+                  type: boolean
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Item 86 status updated
+
+  # Order Management
+  /orders:
+    get:
+      tags:
+        - Orders
+      summary: List orders
+      operationId: listOrders
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, sent, completed, voided]
+        - name: tableId
+          in: query
+          schema:
+            type: string
+        - name: serverId
+          in: query
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Orders retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+
+    post:
+      tags:
+        - Orders
+      summary: Create new order
+      operationId: createOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/{orderId}:
+    get:
+      tags:
+        - Orders
+      summary: Get order by ID
+      operationId: getOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Order retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      tags:
+        - Orders
+      summary: Update order
+      operationId: updateOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderRequest'
+      responses:
+        '200':
+          description: Order updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/{orderId}/items:
+    post:
+      tags:
+        - Orders
+      summary: Add items to order
+      operationId: addOrderItems
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/AddOrderItemRequest'
+      responses:
+        '201':
+          description: Items added
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderItem'
+
+  /orders/{orderId}/items/{itemId}:
+    patch:
+      tags:
+        - Orders
+      summary: Update order item
+      operationId: updateOrderItem
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/OrderItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderItemRequest'
+      responses:
+        '200':
+          description: Item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderItem'
+
+    delete:
+      tags:
+        - Orders
+      summary: Remove item from order
+      operationId: removeOrderItem
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/OrderItemId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        '200':
+          description: Item removed
+
+  /orders/{orderId}/void:
+    post:
+      tags:
+        - Orders
+      summary: Void order
+      operationId: voidOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reason
+              properties:
+                reason:
+                  type: string
+                managerPin:
+                  type: string
+      responses:
+        '200':
+          description: Order voided
+
+  /orders/{orderId}/send:
+    post:
+      tags:
+        - Orders
+      summary: Send order to kitchen/bar
+      operationId: sendOrder
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fireTime:
+                  type: integer
+                  description: Minutes to wait before firing
+                course:
+                  type: integer
+      responses:
+        '200':
+          description: Order sent
+
+  /orders/{orderId}/split:
+    post:
+      tags:
+        - Orders
+      summary: Split check
+      operationId: splitCheck
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                splitType:
+                  type: string
+                  enum: [even, byItem, custom]
+                splits:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: string
+                      amount:
+                        type: number
+      responses:
+        '200':
+          description: Check split
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+
+  # Payment Processing
+  /payments/process:
+    post:
+      tags:
+        - Payments
+      summary: Process payment
+      operationId: processPayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessPaymentRequest'
+      responses:
+        '200':
+          description: Payment processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          description: Payment failed
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /payments/{paymentId}/refund:
+    post:
+      tags:
+        - Payments
+      summary: Refund payment
+      operationId: refundPayment
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - reason
+              properties:
+                amount:
+                  type: number
+                  minimum: 0.01
+                reason:
+                  type: string
+                managerPin:
+                  type: string
+      responses:
+        '200':
+          description: Payment refunded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+
+  # Inventory Management
+  /inventory/items:
+    get:
+      tags:
+        - Inventory
+      summary: List inventory items
+      operationId: listInventory
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [liquor, beer, wine, food, supplies]
+        - name: lowStock
+          in: query
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Inventory retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryItem'
+
+    post:
+      tags:
+        - Inventory
+      summary: Create inventory item
+      operationId: createInventoryItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInventoryItemRequest'
+      responses:
+        '201':
+          description: Inventory item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+
+  /inventory/items/{itemId}/count:
+    post:
+      tags:
+        - Inventory
+      summary: Record inventory count
+      operationId: recordCount
+      parameters:
+        - $ref: '#/components/parameters/InventoryItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - physicalCount
+              properties:
+                physicalCount:
+                  type: number
+                notes:
+                  type: string
+      responses:
+        '201':
+          description: Count recorded
+
+  /inventory/items/{itemId}/adjust:
+    post:
+      tags:
+        - Inventory
+      summary: Adjust inventory level
+      operationId: adjustInventory
+      parameters:
+        - $ref: '#/components/parameters/InventoryItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - adjustment
+                - reason
+              properties:
+                adjustment:
+                  type: number
+                reason:
+                  type: string
+                  enum: [waste, spillage, comp, theft, receiving, other]
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Inventory adjusted
+
+  /inventory/recipes:
+    get:
+      tags:
+        - Inventory
+      summary: List recipes
+      operationId: listRecipes
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - name: menuItemId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recipes retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+
+    post:
+      tags:
+        - Inventory
+      summary: Create recipe
+      operationId: createRecipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecipeRequest'
+      responses:
+        '201':
+          description: Recipe created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+
+  # Reporting
+  /reports/daily-sales:
+    get:
+      tags:
+        - Reports
+      summary: Get daily sales report
+      operationId: getDailySales
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Report retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailySalesReport'
+
+  /reports/items:
+    get:
+      tags:
+        - Reports
+      summary: Get item sales report
+      operationId: getItemSales
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - name: dateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: groupBy
+          in: query
+          schema:
+            type: string
+            enum: [category, item]
+      responses:
+        '200':
+          description: Report retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemSalesReport'
+
+  /reports/staff-performance:
+    get:
+      tags:
+        - Reports
+      summary: Get staff performance report
+      operationId: getStaffPerformance
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+        - name: dateFrom
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: staffId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Report retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffPerformanceReport'
+
+  # Shift Management
+  /shifts/clock-in:
+    post:
+      tags:
+        - Shifts
+      summary: Clock in for shift
+      operationId: clockIn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                role:
+                  type: string
+                section:
+                  type: string
+      responses:
+        '200':
+          description: Clocked in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shift'
+
+  /shifts/clock-out:
+    post:
+      tags:
+        - Shifts
+      summary: Clock out from shift
+      operationId: clockOut
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - shiftId
+              properties:
+                shiftId:
+                  type: string
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Clocked out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shift'
+
+  /shifts/active:
+    get:
+      tags:
+        - Shifts
+      summary: Get active shifts
+      operationId: getActiveShifts
+      parameters:
+        - $ref: '#/components/parameters/VenueId'
+      responses:
+        '200':
+          description: Active shifts retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shift'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    SessionToken:
+      type: apiKey
+      in: cookie
+      name: session_token
+
+  parameters:
+    VenueId:
+      name: venueId
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Venue identifier
+
+    UserId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    ItemId:
+      name: itemId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    OrderItemId:
+      name: itemId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    PaymentId:
+      name: paymentId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    InventoryItemId:
+      name: itemId
+      in: path
+      required: true
+      schema:
+        type: string
+
+    PageSize:
+      name: pageSize
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+    PageNumber:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+  schemas:
+    # Authentication
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        permissions:
+          type: array
+          items:
+            type: string
+
+    # User Schemas
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        venueId:
+          type: string
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          type: string
+          enum: [admin, manager, server, bartender, host, kitchen]
+        status:
+          type: string
+          enum: [active, inactive, terminated]
+        createdAt:
+          type: string
+          format: date-time
+        lastLoginAt:
+          type: string
+          format: date-time
+
+    CreateUserRequest:
+      type: object
+      required:
+        - venueId
+        - email
+        - firstName
+        - lastName
+        - role
+        - password
+      properties:
+        venueId:
+          type: string
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          type: string
+          enum: [admin, manager, server, bartender, host, kitchen]
+        password:
+          type: string
+          minLength: 8
+        pin:
+          type: string
+          pattern: '^[0-9]{4,6}$'
+        hourlyRate:
+          type: number
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+        hourlyRate:
+          type: number
+
+    # Menu Schemas
+    MenuCategory:
+      type: object
+      properties:
+        id:
+          type: string
+        venueId:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+        sortOrder:
+          type: integer
+        isActive:
+          type: boolean
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+
+    CreateCategoryRequest:
+      type: object
+      required:
+        - venueId
+        - name
+      properties:
+        venueId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        parentCategoryId:
+          type: string
+        sortOrder:
+          type: integer
+
+    MenuItem:
+      type: object
+      properties:
+        id:
+          type: string
+        venueId:
+          type: string
+        categoryId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        basePrice:
+          type: number
+        happyHourPrice:
+          type: number
+        cost:
+          type: number
+        imageUrl:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        isActive:
+          type: boolean
+        is86:
+          type: boolean
+        modifierGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModifierGroup'
+
+    CreateMenuItemRequest:
+      type: object
+      required:
+        - venueId
+        - categoryId
+        - name
+        - basePrice
+      properties:
+        venueId:
+          type: string
+        categoryId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        basePrice:
+          type: number
+          minimum: 0
+        happyHourPrice:
+          type: number
+        imageUrl:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+
+    UpdateMenuItemRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        basePrice:
+          type: number
+        happyHourPrice:
+          type: number
+        isActive:
+          type: boolean
+        is86:
+          type: boolean
+
+    ModifierGroup:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        minSelections:
+          type: integer
+        maxSelections:
+          type: integer
+        isRequired:
+          type: boolean
+        modifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Modifier'
+
+    Modifier:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        priceAdjustment:
+          type: number
+        isDefault:
+          type: boolean
+
+    # Order Schemas
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        venueId:
+          type: string
+        orderNumber:
+          type: integer
+        tableId:
+          type: string
+        serverId:
+          type: string
+        orderType:
+          type: string
+          enum: [dine_in, takeout, delivery, bar]
+        status:
+          type: string
+          enum: [open, sent, completed, voided]
+        subtotal:
+          type: number
+        taxAmount:
+          type: number
+        tipAmount:
+          type: number
+        totalAmount:
+          type: number
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateOrderRequest:
+      type: object
+      required:
+        - venueId
+        - orderType
+      properties:
+        venueId:
+          type: string
+        tableId:
+          type: string
+        orderType:
+          type: string
+          enum: [dine_in, takeout, delivery, bar]
+        customerName:
+          type: string
+        guestCount:
+          type: integer
+
+    UpdateOrderRequest:
+      type: object
+      properties:
+        tableId:
+          type: string
+        customerName:
+          type: string
+        guestCount:
+          type: integer
+        notes:
+          type: string
+
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: string
+        menuItemId:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        totalPrice:
+          type: number
+        status:
+          type: string
+          enum: [pending, sent, preparing, ready, delivered, voided]
+        notes:
+          type: string
+        modifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemModifier'
+
+    AddOrderItemRequest:
+      type: object
+      required:
+        - menuItemId
+        - quantity
+      properties:
+        menuItemId:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        modifiers:
+          type: array
+          items:
+            type: string
+        notes:
+          type: string
+
+    UpdateOrderItemRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+        notes:
+          type: string
+
+    OrderItemModifier:
+      type: object
+      properties:
+        modifierId:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+
+    # Payment Schemas
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        amount:
+          type: number
+        tipAmount:
+          type: number
+        paymentMethod:
+          type: string
+          enum: [card, cash, check, gift_card, comp]
+        status:
+          type: string
+          enum: [pending, completed, failed, refunded]
+        processorTransactionId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    ProcessPaymentRequest:
+      type: object
+      required:
+        - orderId
+        - amount
+        - paymentMethod
+      properties:
+        orderId:
+          type: string
+        amount:
+          type: number
+          minimum: 0.01
+        tipAmount:
+          type: number
+        paymentMethod:
+          type: string
+          enum: [card, cash, check, gift_card, comp]
+        cardToken:
+          type: string
+          description: Stripe payment method ID
+
+    # Inventory Schemas
+    InventoryItem:
+      type: object
+      properties:
+        id:
+          type: string
+        venueId:
+          type: string
+        name:
+          type: string
+        sku:
+          type: string
+        category:
+          type: string
+          enum: [liquor, beer, wine, food, supplies]
+        unitType:
+          type: string
+        quantityOnHand:
+          type: number
+        parLevel:
+          type: number
+        reorderPoint:
+          type: number
+        unitCost:
+          type: number
+
+    CreateInventoryItemRequest:
+      type: object
+      required:
+        - venueId
+        - name
+        - category
+        - unitType
+      properties:
+        venueId:
+          type: string
+        name:
+          type: string
+        sku:
+          type: string
+        category:
+          type: string
+          enum: [liquor, beer, wine, food, supplies]
+        unitType:
+          type: string
+        unitSize:
+          type: number
+        unitSizeUom:
+          type: string
+        parLevel:
+          type: number
+        reorderPoint:
+          type: number
+        unitCost:
+          type: number
+
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: string
+        menuItemId:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              inventoryItemId:
+                type: string
+              quantity:
+                type: number
+              unitOfMeasure:
+                type: string
+        totalCost:
+          type: number
+
+    CreateRecipeRequest:
+      type: object
+      required:
+        - menuItemId
+        - ingredients
+      properties:
+        menuItemId:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: object
+            required:
+              - inventoryItemId
+              - quantity
+              - unitOfMeasure
+            properties:
+              inventoryItemId:
+                type: string
+              quantity:
+                type: number
+              unitOfMeasure:
+                type: string
+
+    # Report Schemas
+    DailySalesReport:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        totalOrders:
+          type: integer
+        grossSales:
+          type: number
+        netSales:
+          type: number
+        totalTax:
+          type: number
+        totalTips:
+          type: number
+        averageOrderValue:
+          type: number
+        paymentBreakdown:
+          type: object
+          properties:
+            cash:
+              type: number
+            card:
+              type: number
+            other:
+              type: number
+        hourlyBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              hour:
+                type: integer
+              sales:
+                type: number
+              orderCount:
+                type: integer
+
+    ItemSalesReport:
+      type: object
+      properties:
+        itemId:
+          type: string
+        itemName:
+          type: string
+        category:
+          type: string
+        quantitySold:
+          type: integer
+        totalRevenue:
+          type: number
+        averagePrice:
+          type: number
+
+    StaffPerformanceReport:
+      type: object
+      properties:
+        userId:
+          type: string
+        staffName:
+          type: string
+        totalSales:
+          type: number
+        orderCount:
+          type: integer
+        averageOrderValue:
+          type: number
+        totalTips:
+          type: number
+        hoursWorked:
+          type: number
+        salesPerHour:
+          type: number
+
+    # Shift Schemas
+    Shift:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        venueId:
+          type: string
+        scheduledStart:
+          type: string
+          format: date-time
+        scheduledEnd:
+          type: string
+          format: date-time
+        actualStart:
+          type: string
+          format: date-time
+        actualEnd:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [scheduled, clocked_in, on_break, clocked_out]
+        totalSales:
+          type: number
+        totalTips:
+          type: number
+
+    # Common Schemas
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalItems:
+          type: integer
+        totalPages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+
+    ValidationError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'

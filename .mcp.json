@@ -1,0 +1,58 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "C:/Users/Ryann/Desktop/pour-people"
+      ],
+      "env": {}
+    },
+    "fetch": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@kazuph/mcp-fetch"
+      ],
+      "env": {}
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {}
+    },
+    "git": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-git"
+      ],
+      "env": {}
+    },
+    "grep": {
+      "type": "http",
+      "url": "https://mcp.grep.app"
+    },
+    "chart": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@antv/mcp-server-chart"
+      ],
+      "env": {}
+    },
+    "puppeteer": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-puppeteer"
+      ],
+      "env": {}
+    }
+  }
+}

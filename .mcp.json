@@ -2,26 +2,31 @@
   "mcpServers": {
     "filesystem": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-filesystem", "C:/Users/Ryann/Desktop/pour-people"],
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "@modelcontextprotocol/server-filesystem",
+        "C:/Users/Ryann/Desktop/pour-people"
+      ],
       "env": {}
     },
     "fetch": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["@kazuph/mcp-fetch"],
+      "command": "cmd",
+      "args": ["/c", "npx", "@kazuph/mcp-fetch"],
       "env": {}
     },
     "sequential-thinking": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
       "env": {}
     },
     "git": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-git"],
+      "command": "cmd",
+      "args": ["/c", "npx", "@modelcontextprotocol/server-git"],
       "env": {}
     },
     "grep": {
@@ -30,14 +35,14 @@
     },
     "chart": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["@antv/mcp-server-chart"],
+      "command": "cmd",
+      "args": ["/c", "npx", "@antv/mcp-server-chart"],
       "env": {}
     },
     "puppeteer": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-puppeteer"],
+      "command": "cmd",
+      "args": ["/c", "npx", "@modelcontextprotocol/server-puppeteer"],
       "env": {}
     }
   }

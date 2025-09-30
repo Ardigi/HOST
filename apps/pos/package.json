@@ -18,9 +18,9 @@
     "clean": "rm -rf .svelte-kit dist"
   },
   "dependencies": {
-    "@host/database": "workspace:*",
-    "@host/shared": "workspace:*",
-    "@host/ui": "workspace:*"
+    "@host/database": "*",
+    "@host/shared": "*",
+    "@host/ui": "*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.3.1",

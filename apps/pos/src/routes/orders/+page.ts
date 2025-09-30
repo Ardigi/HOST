@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ fetch, params }) => {
+export const load: PageLoad = async ({ fetch }) => {
 	// Fetch orders from API
 	const response = await fetch('/api/orders');
 

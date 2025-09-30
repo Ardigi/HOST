@@ -1,8 +1,8 @@
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 import { createId } from '@paralleldrive/cuid2';
 import { relations } from 'drizzle-orm';
-import { venues } from './venues';
+import { integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { users } from './users';
+import { venues } from './venues';
 
 /**
  * Orders table

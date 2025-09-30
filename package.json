@@ -5,15 +5,12 @@
   "description": "HOST - Modern POS System for Hospitality",
   "author": "Pour People",
   "license": "UNLICENSED",
+  "packageManager": "npm@10.8.3",
   "engines": {
     "node": ">=24.0.0",
     "npm": ">=10.0.0"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "services/*"
-  ],
+  "workspaces": ["apps/*", "packages/*", "services/*"],
   "scripts": {
     "dev": "turbo run dev",
     "dev:pos": "turbo run dev --filter=@host/pos",
@@ -57,17 +54,20 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@changesets/cli": "^2.27.10",
+    "@faker-js/faker": "^9.9.0",
     "@playwright/test": "^1.49.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
+    "msw": "^2.11.3",
     "plop": "^4.0.1",
     "turbo": "^2.3.3",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest-axe": "^0.1.0"
   },
   "lint-staged": {
-    "*.{js,ts,tsx,svelte}": [
-      "biome check --apply"
-    ]
+    "*.{js,ts,tsx,svelte}": ["biome check --apply"]
   }
 }

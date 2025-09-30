@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 /**
  * Example E2E test - Authentication Flow
@@ -35,8 +35,6 @@ test.describe('Authentication', () => {
 		await expect(page).toHaveURL('/login');
 
 		// Should show error message
-		await expect(page.locator('[role="alert"]')).toContainText(
-			'Invalid email or password'
-		);
+		await expect(page.locator('[role="alert"]')).toContainText('Invalid email or password');
 	});
 });

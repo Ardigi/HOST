@@ -1,5 +1,5 @@
-import type { PageServerLoad, Actions } from './$types';
 import { fail } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	// Server-side data loading with authentication
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			orderNumber: 1001,
 			tableNumber: 5,
 			status: 'open',
-			total: 45.50,
+			total: 45.5,
 			items: [],
 		},
 		{

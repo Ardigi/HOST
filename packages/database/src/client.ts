@@ -1,5 +1,5 @@
-import { drizzle } from 'drizzle-orm/libsql';
 import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from './schema';
 
 /**
@@ -31,8 +31,14 @@ export function createDatabase(config: {
  * Default database instance
  * Uses environment variables for configuration
  */
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+	throw new Error('DATABASE_URL environment variable is required');
+}
+
 export const db = createDatabase({
-	url: process.env.DATABASE_URL!,
+	url: databaseUrl,
 	authToken: process.env.DATABASE_AUTH_TOKEN,
 	syncUrl: process.env.TURSO_SYNC_URL,
 	syncInterval: process.env.TURSO_SYNC_INTERVAL

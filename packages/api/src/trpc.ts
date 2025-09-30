@@ -1,5 +1,5 @@
-import { initTRPC, TRPCError } from '@trpc/server';
-import { type Database } from '@host/database';
+import type { Database } from '@host/database';
+import { TRPCError, initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 
 /**
@@ -30,9 +30,7 @@ const t = initTRPC.context<Context>().create({
 			data: {
 				...shape.data,
 				zodError:
-					error.cause instanceof Error && error.cause.name === 'ZodError'
-						? error.cause
-						: null,
+					error.cause instanceof Error && error.cause.name === 'ZodError' ? error.cause : null,
 			},
 		};
 	},

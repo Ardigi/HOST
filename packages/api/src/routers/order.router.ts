@@ -1,6 +1,16 @@
-import { z } from 'zod';
-import { router, protectedProcedure } from '../trpc';
+import * as schema from '@host/database/schema';
 import { TRPCError } from '@trpc/server';
+import { observable } from '@trpc/server/observable';
+import { and, eq, gte } from 'drizzle-orm';
+import { z } from 'zod';
+import { protectedProcedure, router } from '../trpc';
+
+// Type for Order (placeholder until schema is fully defined)
+type Order = {
+	id: string;
+	status: string;
+	// Add other order fields as needed
+};
 
 /**
  * Order validation schemas
@@ -53,8 +63,8 @@ export const orderRouter = router({
 			})
 		)
 		.query(async ({ ctx, input }) => {
-			// Access authenticated user
-			const userId = ctx.user.id;
+			// Access authenticated user (for logging/auditing)
+			// const userId = ctx.user.id;
 
 			// Fetch orders from database
 			const orders = await ctx.db.query.orders.findMany({
@@ -86,31 +96,29 @@ export const orderRouter = router({
 			};
 		}),
 
-	getById: protectedProcedure
-		.input(z.object({ id: z.string() }))
-		.query(async ({ ctx, input }) => {
-			const order = await ctx.db.query.orders.findFirst({
-				where: (orders, { eq }) => eq(orders.id, input.id),
-				with: {
-					items: {
-						with: {
-							modifiers: true,
-						},
+	getById: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+		const order = await ctx.db.query.orders.findFirst({
+			where: (orders, { eq }) => eq(orders.id, input.id),
+			with: {
+				items: {
+					with: {
+						modifiers: true,
 					},
-					server: true,
-					venue: true,
 				},
+				server: true,
+				venue: true,
+			},
+		});
+
+		if (!order) {
+			throw new TRPCError({
+				code: 'NOT_FOUND',
+				message: 'Order not found',
 			});
+		}
 
-			if (!order) {
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: 'Order not found',
-				});
-			}
-
-			return order;
-		}),
+		return order;
+	}),
 
 	// Mutations
 	create: protectedProcedure.input(createOrderSchema).mutation(async ({ ctx, input }) => {
@@ -263,12 +271,9 @@ export const orderRouter = router({
 		.input(z.object({ orderId: z.string() }))
 		.subscription(async ({ ctx, input }) => {
 			return observable<Order>(emit => {
-				const unsubscribe = ctx.eventBus.subscribe(
-					`order.${input.orderId}.updated`,
-					order => {
-						emit.next(order);
-					}
-				);
+				const unsubscribe = ctx.eventBus.subscribe(`order.${input.orderId}.updated`, order => {
+					emit.next(order);
+				});
 
 				return unsubscribe;
 			});

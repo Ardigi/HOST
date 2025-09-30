@@ -1,4 +1,5 @@
 <script lang="ts">
+import POSCard from '$lib/components/POSCard.svelte';
 import { onMount } from 'svelte';
 
 // biome-ignore lint/correctness/noUnusedVariables: currentTime is used in template
@@ -27,28 +28,34 @@ onMount(() => {
 	<div class="quick-actions">
 		<h2 class="text-2xl font-semibold mb-4">Quick Actions</h2>
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-			<a href="/orders" class="action-card md-elevated">
-				<div class="action-content">
-					<div class="action-icon">📋</div>
-					<h3 class="text-xl font-semibold">Orders</h3>
-					<p class="text-on-surface-variant">Manage customer orders</p>
-				</div>
+			<a href="/orders" style="text-decoration: none;">
+				<POSCard variant="elevated">
+					<div class="action-content">
+						<div class="action-icon">📋</div>
+						<h3 class="text-xl font-semibold">Orders</h3>
+						<p class="text-on-surface-variant">Manage customer orders</p>
+					</div>
+				</POSCard>
 			</a>
 
-			<a href="/menu" class="action-card md-elevated">
-				<div class="action-content">
-					<div class="action-icon">🍽️</div>
-					<h3 class="text-xl font-semibold">Menu</h3>
-					<p class="text-on-surface-variant">Update menu items</p>
-				</div>
+			<a href="/menu" style="text-decoration: none;">
+				<POSCard variant="elevated">
+					<div class="action-content">
+						<div class="action-icon">🍽️</div>
+						<h3 class="text-xl font-semibold">Menu</h3>
+						<p class="text-on-surface-variant">Update menu items</p>
+					</div>
+				</POSCard>
 			</a>
 
-			<a href="/reports" class="action-card md-elevated">
-				<div class="action-content">
-					<div class="action-icon">📊</div>
-					<h3 class="text-xl font-semibold">Reports</h3>
-					<p class="text-on-surface-variant">View analytics</p>
-				</div>
+			<a href="/reports" style="text-decoration: none;">
+				<POSCard variant="elevated">
+					<div class="action-content">
+						<div class="action-icon">📊</div>
+						<h3 class="text-xl font-semibold">Reports</h3>
+						<p class="text-on-surface-variant">View analytics</p>
+					</div>
+				</POSCard>
 			</a>
 		</div>
 	</div>
@@ -56,18 +63,19 @@ onMount(() => {
 	<div class="status-section">
 		<h2 class="text-2xl font-semibold mb-4">System Status</h2>
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-			<div class="status-card md-filled status-success">
+			<POSCard variant="filled" class="status-success">
 				<div class="status-content">
 					<h3 class="font-semibold text-on-success-container">Development Mode</h3>
 					<p class="font-bold text-success">Active</p>
 				</div>
-			</div>
-			<div class="status-card md-filled status-primary">
+			</POSCard>
+
+			<POSCard variant="filled" class="status-primary">
 				<div class="status-content">
 					<h3 class="font-semibold text-on-primary-container">Week 1</h3>
 					<p class="font-bold text-primary-on-container">Infrastructure Setup</p>
 				</div>
-			</div>
+			</POSCard>
 		</div>
 	</div>
 </div>
@@ -89,40 +97,12 @@ onMount(() => {
 		margin-bottom: 2rem;
 	}
 
-	/* Material 3 Elevated Card */
-	.action-card {
-		display: block;
-		text-decoration: none;
-		color: var(--md-sys-color-on-surface);
-		background: var(--md-sys-color-surface);
-		border-radius: var(--md-sys-shape-corner-medium);
-		min-height: var(--host-touch-target-comfortable);
-		transition: all var(--host-transition-fast);
-		cursor: pointer;
-	}
-
-	.md-elevated {
-		box-shadow: var(--md-sys-elevation-1);
-	}
-
-	.md-elevated:hover {
-		box-shadow: var(--md-sys-elevation-2);
-		transform: translateY(-2px);
-	}
-
-	.md-elevated:active {
-		box-shadow: var(--md-sys-elevation-1);
-		transform: translateY(0);
-	}
-
 	.action-content {
-		padding: 1.5rem;
 		text-align: center;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		gap: 0.5rem;
-		height: 100%;
 	}
 
 	.action-icon {
@@ -139,25 +119,15 @@ onMount(() => {
 		margin-bottom: 2rem;
 	}
 
-	.status-card {
-		border-radius: var(--md-sys-shape-corner-medium);
-		overflow: hidden;
-	}
-
-	.md-filled {
-		box-shadow: var(--md-sys-elevation-0);
-	}
-
-	.status-success {
+	:global(.status-success) {
 		background: var(--md-sys-color-success-container);
 	}
 
-	.status-primary {
+	:global(.status-primary) {
 		background: var(--md-sys-color-primary-container);
 	}
 
 	.status-content {
-		padding: 1.5rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;

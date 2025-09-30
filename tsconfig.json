@@ -27,15 +27,8 @@
   },
   "references": [
     { "path": "./apps/pos" },
-    { "path": "./apps/kds" },
-    { "path": "./apps/admin" },
     { "path": "./packages/shared" },
-    { "path": "./packages/auth" },
-    { "path": "./packages/database" },
-    { "path": "./packages/ui" },
-    { "path": "./packages/utils" },
-    { "path": "./packages/types" },
-    { "path": "./packages/config" }
+    { "path": "./packages/database" }
   ],
   "exclude": ["node_modules", "dist", "build", ".svelte-kit", "coverage"]
 }

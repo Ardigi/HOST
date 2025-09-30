@@ -3,6 +3,7 @@
  * Centralized export point for all database tables and relations
  */
 
-export * from './venues';
-export * from './users';
+export * from './menu';
 export * from './orders';
+export * from './users';
+export * from './venues';

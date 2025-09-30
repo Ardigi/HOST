@@ -3,9 +3,10 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	// Server-side data loading with authentication
-	if (!locals.user) {
-		throw new Error('Unauthorized');
-	}
+	// TODO: Re-enable auth check after Week 1 Keycloak integration
+	// if (!locals.user) {
+	//   throw new Error('Unauthorized');
+	// }
 
 	// In real implementation, this would query the database
 	const orders = [

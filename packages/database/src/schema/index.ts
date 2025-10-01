@@ -7,5 +7,7 @@ export * from './inventory';
 export * from './menu';
 export * from './orders';
 export * from './payments';
+export * from './staff-shifts';
+export * from './tables';
 export * from './users';
 export * from './venues';

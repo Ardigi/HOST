@@ -135,18 +135,6 @@
       "**/pnpm-lock.yaml",
       "**/yarn.lock"
     ],
-    "include": ["**/*.js", "**/*.ts", "**/*.tsx", "**/*.json", "**/*.svelte"]
-  },
-  "overrides": [
-    {
-      "include": ["**/*.svelte"],
-      "linter": {
-        "rules": {
-          "style": {
-            "useConst": "off"
-          }
-        }
-      }
-    }
-  ]
+    "include": ["**/*.js", "**/*.ts", "**/*.tsx", "**/*.json"]
+  }
 }

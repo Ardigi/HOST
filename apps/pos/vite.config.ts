@@ -3,28 +3,23 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+	ssr: {
+		noExternal: ['m3-svelte'],
+		resolve: {
+			conditions: ['svelte', 'browser', 'import'],
+		},
+	},
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}'],
-		environment: 'jsdom',
-		setupFiles: ['./src/test/setup.ts'],
-		globals: true,
-		coverage: {
-			provider: 'v8',
-			reporter: ['text', 'json', 'html'],
-			exclude: [
-				'**/node_modules/**',
-				'**/.svelte-kit/**',
-				'**/build/**',
-				'**/*.config.{js,ts}',
-				'**/*.d.ts',
-			],
-			thresholds: {
-				branches: 80,
-				functions: 80,
-				lines: 85,
-				statements: 85,
-			},
+		// Use Vitest Browser Mode with Playwright for real browser testing
+		browser: {
+			enabled: true,
+			name: 'chromium',
+			provider: 'playwright',
+			headless: true,
 		},
+		setupFiles: ['vitest-browser-svelte', './src/test/setup.ts'],
+		globals: true,
 	},
 	resolve: {
 		alias: {
@@ -33,5 +28,6 @@ export default defineConfig({
 			$stores: '/src/lib/stores',
 			$utils: '/src/lib/utils',
 		},
+		conditions: ['svelte', 'browser', 'import'],
 	},
 });

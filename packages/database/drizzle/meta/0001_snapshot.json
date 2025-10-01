@@ -190,12 +190,8 @@
           "name": "inventory_items_venue_id_venues_id_fk",
           "tableFrom": "inventory_items",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -278,12 +274,8 @@
           "name": "inventory_purchase_order_items_purchase_order_id_inventory_purchase_orders_id_fk",
           "tableFrom": "inventory_purchase_order_items",
           "tableTo": "inventory_purchase_orders",
-          "columnsFrom": [
-            "purchase_order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["purchase_order_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -291,12 +283,8 @@
           "name": "inventory_purchase_order_items_inventory_item_id_inventory_items_id_fk",
           "tableFrom": "inventory_purchase_order_items",
           "tableTo": "inventory_items",
-          "columnsFrom": [
-            "inventory_item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inventory_item_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -432,12 +420,8 @@
           "name": "inventory_purchase_orders_venue_id_venues_id_fk",
           "tableFrom": "inventory_purchase_orders",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -445,12 +429,8 @@
           "name": "inventory_purchase_orders_supplier_id_inventory_suppliers_id_fk",
           "tableFrom": "inventory_purchase_orders",
           "tableTo": "inventory_suppliers",
-          "columnsFrom": [
-            "supplier_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["supplier_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -596,12 +576,8 @@
           "name": "inventory_suppliers_venue_id_venues_id_fk",
           "tableFrom": "inventory_suppliers",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -704,12 +680,8 @@
           "name": "inventory_transactions_venue_id_venues_id_fk",
           "tableFrom": "inventory_transactions",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -717,12 +689,8 @@
           "name": "inventory_transactions_inventory_item_id_inventory_items_id_fk",
           "tableFrom": "inventory_transactions",
           "tableTo": "inventory_items",
-          "columnsFrom": [
-            "inventory_item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inventory_item_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -802,10 +770,7 @@
       "indexes": {
         "menu_categories_venue_id_slug_unique": {
           "name": "menu_categories_venue_id_slug_unique",
-          "columns": [
-            "venue_id",
-            "slug"
-          ],
+          "columns": ["venue_id", "slug"],
           "isUnique": true
         }
       },
@@ -814,12 +779,8 @@
           "name": "menu_categories_venue_id_venues_id_fk",
           "tableFrom": "menu_categories",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -873,12 +834,8 @@
           "name": "menu_item_modifier_groups_item_id_menu_items_id_fk",
           "tableFrom": "menu_item_modifier_groups",
           "tableTo": "menu_items",
-          "columnsFrom": [
-            "item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["item_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -886,12 +843,8 @@
           "name": "menu_item_modifier_groups_group_id_menu_modifier_groups_id_fk",
           "tableFrom": "menu_item_modifier_groups",
           "tableTo": "menu_modifier_groups",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1038,10 +991,7 @@
       "indexes": {
         "menu_items_venue_id_slug_unique": {
           "name": "menu_items_venue_id_slug_unique",
-          "columns": [
-            "venue_id",
-            "slug"
-          ],
+          "columns": ["venue_id", "slug"],
           "isUnique": true
         }
       },
@@ -1050,12 +1000,8 @@
           "name": "menu_items_venue_id_venues_id_fk",
           "tableFrom": "menu_items",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1063,12 +1009,8 @@
           "name": "menu_items_category_id_menu_categories_id_fk",
           "tableFrom": "menu_items",
           "tableTo": "menu_categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1158,12 +1100,8 @@
           "name": "menu_modifier_groups_venue_id_venues_id_fk",
           "tableFrom": "menu_modifier_groups",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1239,12 +1177,8 @@
           "name": "menu_modifiers_group_id_menu_modifier_groups_id_fk",
           "tableFrom": "menu_modifiers",
           "tableTo": "menu_modifier_groups",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1307,12 +1241,8 @@
           "name": "order_item_modifiers_order_item_id_order_items_id_fk",
           "tableFrom": "order_item_modifiers",
           "tableTo": "order_items",
-          "columnsFrom": [
-            "order_item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["order_item_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1418,12 +1348,8 @@
           "name": "order_items_order_id_orders_id_fk",
           "tableFrom": "order_items",
           "tableTo": "orders",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["order_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1569,12 +1495,8 @@
           "name": "orders_venue_id_venues_id_fk",
           "tableFrom": "orders",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1582,12 +1504,8 @@
           "name": "orders_server_id_users_id_fk",
           "tableFrom": "orders",
           "tableTo": "users",
-          "columnsFrom": [
-            "server_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["server_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1763,12 +1681,8 @@
           "name": "payments_venue_id_venues_id_fk",
           "tableFrom": "payments",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1776,12 +1690,8 @@
           "name": "payments_order_id_orders_id_fk",
           "tableFrom": "payments",
           "tableTo": "orders",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["order_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1902,12 +1812,8 @@
           "name": "staff_shifts_venue_id_venues_id_fk",
           "tableFrom": "staff_shifts",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1915,12 +1821,8 @@
           "name": "staff_shifts_user_id_users_id_fk",
           "tableFrom": "staff_shifts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2011,12 +1913,8 @@
           "name": "tables_venue_id_venues_id_fk",
           "tableFrom": "tables",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2024,12 +1922,8 @@
           "name": "tables_current_order_id_orders_id_fk",
           "tableFrom": "tables",
           "tableTo": "orders",
-          "columnsFrom": [
-            "current_order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["current_order_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -2131,16 +2025,12 @@
       "indexes": {
         "users_keycloak_id_unique": {
           "name": "users_keycloak_id_unique",
-          "columns": [
-            "keycloak_id"
-          ],
+          "columns": ["keycloak_id"],
           "isUnique": true
         },
         "users_email_unique": {
           "name": "users_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },
@@ -2149,12 +2039,8 @@
           "name": "users_venue_id_venues_id_fk",
           "tableFrom": "users",
           "tableTo": "venues",
-          "columnsFrom": [
-            "venue_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["venue_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2287,9 +2173,7 @@
       "indexes": {
         "venues_slug_unique": {
           "name": "venues_slug_unique",
-          "columns": [
-            "slug"
-          ],
+          "columns": ["slug"],
           "isUnique": true
         }
       },

@@ -25,8 +25,10 @@
     "test:e2e": "playwright test",
     "test:coverage": "turbo run test:coverage",
     "test:ci": "turbo run test:ci",
-    "lint": "biome check .",
-    "lint:fix": "biome check --apply .",
+    "lint": "npm run lint:biome && npm run lint:eslint",
+    "lint:biome": "biome check .",
+    "lint:eslint": "eslint \"**/*.svelte\"",
+    "lint:fix": "npm run lint:biome -- --write && npm run lint:eslint -- --fix",
     "format": "biome format --write .",
     "typecheck": "turbo run typecheck",
     "check:all": "npm run lint && npm run typecheck && npm run test:unit",
@@ -59,15 +61,26 @@
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.0.0",
+    "eslint": "^9.36.0",
+    "eslint-plugin-svelte": "^3.12.4",
+    "globals": "^15.15.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.2.11",
     "msw": "^2.11.3",
     "plop": "^4.0.1",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2",
+    "typescript-eslint": "^8.45.0",
     "vitest-axe": "^0.1.0"
   },
   "lint-staged": {
-    "*.{js,ts,tsx,svelte}": ["biome check --apply"]
+    "*.{js,ts,tsx,json}": ["biome check --write"],
+    "*.svelte": ["eslint --fix"]
+  },
+  "overrides": {
+    "vitest": "2.1.9",
+    "@vitest/browser": "2.1.9",
+    "@vitest/coverage-v8": "2.1.9",
+    "vite": "5.4.20"
   }
 }

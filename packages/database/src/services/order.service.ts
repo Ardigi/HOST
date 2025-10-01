@@ -1,13 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import type { Database } from '../client';
 import { orderItemModifiers, orderItems, orders } from '../schema/orders';
-import type {
-	NewOrder,
-	NewOrderItem,
-	NewOrderItemModifier,
-	Order,
-	OrderItem,
-} from '../schema/orders';
+import type { Order, OrderItem } from '../schema/orders';
 import {
 	type AddOrderItemInput,
 	type CreateOrderInput,
@@ -51,6 +45,10 @@ export class OrderService {
 			})
 			.returning();
 
+		if (!order) {
+			throw new Error('Failed to create order');
+		}
+
 		return order;
 	}
 
@@ -79,6 +77,10 @@ export class OrderService {
 				total,
 			})
 			.returning();
+
+		if (!item) {
+			throw new Error('Failed to add item to order');
+		}
 
 		// Insert modifiers if any
 		if (modifiers && modifiers.length > 0) {
@@ -127,6 +129,10 @@ export class OrderService {
 			.where(eq(orderItems.id, itemId))
 			.returning();
 
+		if (!updatedItem) {
+			throw new Error('Failed to update order item');
+		}
+
 		// Recalculate order totals
 		await this.recalculateOrderTotals(currentItem.orderId);
 
@@ -173,6 +179,10 @@ export class OrderService {
 			.where(eq(orders.id, orderId))
 			.returning();
 
+		if (!order) {
+			throw new Error('Failed to send order to kitchen');
+		}
+
 		// Update item statuses
 		await this.db
 			.update(orderItems)
@@ -217,6 +227,10 @@ export class OrderService {
 			.where(eq(orders.id, orderId))
 			.returning();
 
+		if (!updated) {
+			throw new Error('Failed to apply discount');
+		}
+
 		return updated;
 	}
 
@@ -243,6 +257,10 @@ export class OrderService {
 			.where(eq(orders.id, orderId))
 			.returning();
 
+		if (!voided) {
+			throw new Error('Failed to void order');
+		}
+
 		return voided;
 	}
 
@@ -266,6 +284,10 @@ export class OrderService {
 			})
 			.where(eq(orders.id, orderId))
 			.returning();
+
+		if (!completed) {
+			throw new Error('Failed to complete order');
+		}
 
 		return completed;
 	}

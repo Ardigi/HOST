@@ -480,7 +480,7 @@ async function seed() {
 				reorderPoint: 12,
 				reorderQuantity: 24,
 				unitCost: 18.99,
-				caseC: 215.88,
+				caseCost: 215.88,
 				primaryVendor: 'RNDC',
 				storageLocation: 'Back Bar',
 				storageTemp: 'room',

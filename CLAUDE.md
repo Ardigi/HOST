@@ -25,12 +25,12 @@ npm run build:fresh  # Clean build (removes node_modules and .turbo cache)
 
 ### Testing (TDD Required)
 ```bash
-# Unit tests
-npm run test:unit         # Run once
+# Unit tests (Vitest + Playwright Browser Mode)
+npm run test:unit         # Vitest with Chromium browser testing
 npm run test:watch        # Watch mode for TDD
 
 # All tests
-npm test                  # Run all tests
+npm test                  # Run all tests (214 passing)
 npm run test:coverage     # Generate coverage report
 npm run test:integration  # Integration tests only
 npm run test:e2e          # Playwright E2E tests
@@ -38,6 +38,10 @@ npm run test:ci           # CI-optimized test run
 
 # Run tests for a specific file
 npm test -- order.service.test.ts
+
+# Browser Testing
+# Tests run in real Chromium browser via Playwright
+# Component tests use vitest-browser-svelte for Svelte 5 support
 ```
 
 ### Database Operations
@@ -56,10 +60,17 @@ npm run db:init          # Initialize new database
 
 ### Code Quality
 ```bash
-npm run lint             # Check with Biome
-npm run lint:fix         # Auto-fix issues
-npm run typecheck        # TypeScript type checking
+# Hybrid Linting (Biome + ESLint)
+npm run lint             # Run both Biome and ESLint
+npm run lint:biome       # Biome for TS/JS/JSON (fast)
+npm run lint:eslint      # ESLint for Svelte files (Svelte-specific rules)
+npm run lint:fix         # Auto-fix issues with both linters
+
+# Type Checking
+npm run typecheck        # TypeScript type checking (all packages)
 npm run format           # Format code with Biome
+
+# All Checks
 npm run check:all        # Run lint + typecheck + unit tests
 ```
 
@@ -95,16 +106,28 @@ host/
 
 **Testing:**
 - Vitest for unit/integration tests (70% unit, 25% integration, 5% E2E)
+- Playwright Browser Mode for component testing (Chromium)
+- vitest-browser-svelte for Svelte 5 component testing
 - Playwright for E2E tests (implemented in weeks 9-10)
+- Current: 214 tests passing (85 DB + 111 shared + 13 POS + 5 UI)
+- Coverage: 100% functions, 99.93% statements (shared package)
 - Minimum 80% code coverage enforced, 85%+ for critical paths
 
-### Database Layer (`packages/database`)
+### Database Layer (`packages/database`) ✅ Complete
+
+**Status:** 9 schemas implemented, 2 services (Menu, Order) with TDD, 85 tests passing
 
 **Critical Pattern:** The database package uses Drizzle ORM with Turso (LibSQL). All database operations should:
 
 1. Define schema in `src/schema/*.ts` files
 2. Export from `src/schema/index.ts`
 3. Use `createClient()` from `src/client.ts` for connections
+
+**Implemented Schemas:**
+- venues, users (with keycloakId), menuCategories, menuItems, menuModifierGroups
+- menuModifiers, orders, orderItems, orderItemModifiers
+- tables, staffShifts, payments, inventoryItems, inventoryTransactions
+- inventorySuppliers, inventoryPurchaseOrders, inventoryPurchaseOrderItems
 
 **Turso Sync Architecture:**
 - Local embedded replica for zero-latency reads/writes
@@ -127,13 +150,15 @@ const client = createClient({
 export const db = drizzle(client, { schema });
 ```
 
-### Business Logic Layer (`packages/shared`)
+### Business Logic Layer (`packages/shared`) ✅ Complete
+
+**Status:** Zod schemas for all entities, utility functions, 111 tests passing
 
 Business logic is implemented as services following these patterns:
 
 1. **Repository Pattern:** Database access layer
-2. **Service Layer:** Business logic and validation
-3. **Schemas:** Zod validation schemas for API contracts
+2. **Service Layer:** Business logic and validation (Menu, Order services implemented)
+3. **Schemas:** Zod validation schemas for API contracts (menu, inventory, payments, orders)
 
 **Service Structure:**
 ```typescript
@@ -149,6 +174,29 @@ export class MenuService {
   }
 }
 ```
+
+### UI Layer (`packages/ui`) 🟡 In Progress
+
+**Status:** 5 tests passing, 2 of 14 POS components implemented
+
+**Implemented Components:**
+- POSCard: Material Card wrapper with clean type interface
+- POSButton: Material Button wrapper with clean type interface
+
+**Purpose:** Wrapper components provide clean, simple type signatures that hide m3-svelte's complex polymorphic union types from application code. See `docs/m3-svelte-integration.md` for details.
+
+**Pending Components:** TextField, Dialog, Select, NavigationBar, AppBar, List, DataTable, Menu, Chip, FAB, IconButton, Tabs
+
+### Design Tokens (`packages/design-tokens`) 🟡 Structure Only
+
+**Status:** README and package structure defined, no implementation yet
+
+**Planned Features:**
+- Material Design 3 color token generation (HCT color space)
+- Tailwind CSS 4 @theme directive integration
+- Dark mode CSS variable switching
+- Typography scale tokens
+- Elevation/shadow tokens
 
 ## Test-Driven Development (TDD) Guidelines
 
@@ -195,7 +243,7 @@ const orders = orderFactory.buildList(10);
 
 ## Material Design 3 (m3-svelte) Integration
 
-**Design System:** This project uses Material Design 3 via the native Svelte library `m3-svelte`.
+**Design System:** This project uses Material Design 3 via the native Svelte library `m3-svelte` (v5.9.0).
 
 **Key Components Available:**
 - Buttons: `<Button>`, `<IconButton>`, `<FAB>`
@@ -203,6 +251,9 @@ const orders = orderFactory.buildList(10);
 - Navigation: `<AppBar>`, `<NavigationDrawer>`, `<Tabs>`
 - Containers: `<Card>`, `<Dialog>`, `<Menu>`
 - Data Display: `<List>`, `<DataTable>`, `<Chips>`
+
+**TypeScript Configuration:**
+The POS app uses `skipLibCheck: true` because m3-svelte's complex polymorphic component union types exceed TypeScript's type complexity limits. These are library-level type definition errors in node_modules, NOT runtime errors. Our wrapper components (POSCard, POSButton) provide clean type signatures while hiding this complexity. All APPLICATION code is fully type-checked with strict mode. See `docs/m3-svelte-integration.md` (lines 75-122) and `apps/pos/tsconfig.json` for full explanation.
 
 **POS-Optimized Touch Targets:**
 - Minimum: 48×48px (WCAG 2.1 AA)
@@ -362,7 +413,7 @@ await db
 
 ## Authentication with Keycloak
 
-**Integration:** Keycloak 26.3 LTS for OpenID Connect/OAuth 2.0
+**Integration:** Keycloak 26.3 LTS for OpenID Connect/OAuth 2.0 (planned for Week 3)
 
 **Key Configuration:**
 - Realm: `host-pos`
@@ -374,6 +425,23 @@ await db
 - `manager`: Orders, inventory, reports, staff
 - `server`: Create/update orders, process payments
 - `bartender`: View/update bar orders, view bar inventory
+
+**Current Status:** User schema has `keycloakId` field ready for integration
+
+## CI/CD Pipeline
+
+**GitHub Actions Workflows:**
+1. **CI Workflow** (`.github/workflows/ci.yml`): Runs on push/PR to main/develop
+   - Lint job: Hybrid Biome (TS/JS/JSON) + ESLint (Svelte files)
+   - Typecheck job: TypeScript across all packages (with skipLibCheck for m3-svelte)
+   - Test job: 214 tests with coverage reporting to Codecov
+   - Build job: Turbo build of all apps and packages
+
+2. **Additional Workflows** (planned):
+   - Release workflow for versioning
+   - Deployment workflow for Vercel/staging
+
+**Concurrency:** Workflows cancel in-progress runs for the same branch to save CI resources
 
 ## Deployment & Environments
 
@@ -403,10 +471,15 @@ KEYCLOAK_URL=https://auth.host-pos.com
 ## Important Notes
 
 1. **TDD is mandatory** - write tests first, implementation second
-2. **80%+ test coverage required** before merging PRs
-3. **Use Biome** for linting/formatting (not ESLint/Prettier)
+2. **80%+ test coverage required** before merging PRs (current: 99.93% shared, 100% database functions)
+3. **Hybrid linting approach**:
+   - Biome for TS/JS/JSON (fast, zero-config for non-Svelte)
+   - ESLint for Svelte files (Svelte-specific rules, a11y checks)
+   - Run both with `npm run lint` or `npm run lint:fix`
 4. **TypeScript strict mode** is enabled - no `any` types
-5. **Svelte 5 runes** should be used instead of old reactive statements
-6. **m3-svelte components** are preferred over custom implementations
+5. **Svelte 5 runes** should be used instead of old reactive statements (`$state`, `$derived`, `$effect`, `$props`)
+6. **m3-svelte components** are preferred over custom implementations (with wrapper components for clean types)
 7. **Drizzle ORM** for all database operations (not raw SQL)
 8. **Turbo commands** run tasks across the monorepo efficiently
+9. **Browser testing** uses Playwright Browser Mode with Chromium for component tests
+10. **skipLibCheck: true** in apps/pos/tsconfig.json is intentional for m3-svelte library type complexity

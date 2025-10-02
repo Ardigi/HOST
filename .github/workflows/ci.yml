@@ -65,6 +65,9 @@ jobs:
 
       - name: Run TypeScript type checking
         run: npm run typecheck
+        # Note: POS app uses skipLibCheck for m3-svelte library type complexity
+        # This is acceptable because wrapper components provide clean types.
+        # See apps/pos/tsconfig.json and docs/m3-svelte-integration.md for details.
 
   test:
     name: Test

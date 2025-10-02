@@ -3,3 +3,6 @@
 
 export type ComponentSize = 'sm' | 'md' | 'lg';
 export type ComponentVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning';
+
+// POS Wrapper Components
+export { default as POSTextField } from './POSTextField.svelte';

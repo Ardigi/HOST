@@ -8,10 +8,11 @@ declare global {
 			user?: {
 				id: string;
 				email: string;
-				name: string;
-				role: string;
+				firstName: string;
+				lastName: string;
 				venueId: string;
-			};
+				roles: string[];
+			} | null;
 			session?: {
 				id: string;
 				expiresAt: Date;

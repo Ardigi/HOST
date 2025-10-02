@@ -3,8 +3,9 @@
  * Configures global test environment for Vitest Browser Mode
  */
 
+/// <reference types="vitest" />
 /// <reference types="@vitest/browser/matchers" />
-/// <reference types="@vitest/browser/providers/playwright" />
+/// <reference types="playwright" />
 
 import { expect } from 'vitest';
 

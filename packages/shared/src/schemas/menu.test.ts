@@ -308,6 +308,42 @@ describe('Menu Validation Schemas', () => {
 			const result = newMenuModifierGroupSchema.safeParse(invalidGroup);
 			expect(result.success).toBe(false);
 		});
+
+		it('should reject max selections less than min selections in full schema', () => {
+			const invalidGroup = {
+				id: 'group-123',
+				venueId: 'venue-123',
+				name: 'Toppings',
+				displayOrder: 1,
+				selectionType: 'multiple',
+				isRequired: true,
+				minSelections: 3,
+				maxSelections: 1,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			};
+
+			const result = menuModifierGroupSchema.safeParse(invalidGroup);
+			expect(result.success).toBe(false);
+		});
+
+		it('should accept valid min/max selections in full schema', () => {
+			const validGroup = {
+				id: 'group-123',
+				venueId: 'venue-123',
+				name: 'Toppings',
+				displayOrder: 1,
+				selectionType: 'multiple',
+				isRequired: true,
+				minSelections: 1,
+				maxSelections: 3,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			};
+
+			const result = menuModifierGroupSchema.safeParse(validGroup);
+			expect(result.success).toBe(true);
+		});
 	});
 
 	describe('Modifier Schema', () => {

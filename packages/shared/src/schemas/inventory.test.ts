@@ -512,5 +512,37 @@ describe('Inventory Validation Schemas', () => {
 			const result = newInventoryPurchaseOrderItemSchema.safeParse(invalidItem);
 			expect(result.success).toBe(false);
 		});
+
+		it('should reject quantity received exceeding quantity ordered in full schema', () => {
+			const invalidItem = {
+				id: 'po-item-123',
+				purchaseOrderId: 'po-123',
+				inventoryItemId: 'item-123',
+				quantityOrdered: 100,
+				quantityReceived: 105,
+				unitCost: 10.0,
+				totalCost: 1000.0,
+				createdAt: new Date(),
+			};
+
+			const result = inventoryPurchaseOrderItemSchema.safeParse(invalidItem);
+			expect(result.success).toBe(false);
+		});
+
+		it('should accept valid quantity received in full schema', () => {
+			const validItem = {
+				id: 'po-item-123',
+				purchaseOrderId: 'po-123',
+				inventoryItemId: 'item-123',
+				quantityOrdered: 100,
+				quantityReceived: 95,
+				unitCost: 10.0,
+				totalCost: 1000.0,
+				createdAt: new Date(),
+			};
+
+			const result = inventoryPurchaseOrderItemSchema.safeParse(validItem);
+			expect(result.success).toBe(true);
+		});
 	});
 });

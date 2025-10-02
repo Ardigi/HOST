@@ -6,6 +6,130 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 HOST is a modern POS (Point-of-Sale) system for bars and restaurants built with Svelte 5, SvelteKit 2, and Turso (LibSQL). The project uses a turborepo monorepo structure with Test-Driven Development (TDD) as a core principle.
 
+## Code Quality Rules (MUST vs SHOULD)
+
+### MUST Rules (Enforced - Non-Negotiable)
+
+These rules are **enforced by CI/tooling** and **blocking for commits**:
+
+1. **TDD-001 MUST**: Follow Test-Driven Development - write tests FIRST, then implementation
+2. **TDD-002 MUST**: Achieve minimum 80% test coverage (85%+ for critical paths)
+3. **TEST-001 MUST**: All tests must pass before proposing commits (`npm test`)
+4. **TYPE-001 MUST**: TypeScript strict mode with zero errors (`npm run typecheck`)
+5. **LINT-001 MUST**: Pass all linting rules (`npm run lint`)
+6. **BLOCK-001 MUST**: STOP and ask user when encountering blockers (see "When You Encounter Blockers")
+7. **COMMIT-001 MUST**: Never commit without explicit user approval (see "Git Commit Guidelines")
+8. **REAL-TEST-001 MUST**: Tests must test actual behavior, not hardcoded constants
+9. **NO-WORKAROUND-001 MUST**: Never exclude files from testing/linting to bypass errors
+10. **NO-ANY-001 MUST**: No `any` types, `@ts-ignore`, or `skipLibCheck` without user approval
+
+### SHOULD Rules (Strong Recommendations)
+
+These are **best practices** that improve code quality:
+
+1. **CLARIFY-001 SHOULD**: Ask clarifying questions before starting complex work
+2. **PLAN-001 SHOULD**: Draft and confirm approach for non-trivial tasks (use plan mode)
+3. **SIMPLE-001 SHOULD**: Prefer simple, composable functions over complex ones
+4. **COMMENT-001 SHOULD**: Minimize comments - code should be self-documenting
+5. **TYPE-002 SHOULD**: Prefer `type` over `interface` for consistency
+6. **SINGLE-TEST-001 SHOULD**: Run single tests for performance (`npm test -- file.test.ts`)
+7. **CONTEXT-001 SHOULD**: Use `/compact` at natural checkpoints to manage context
+8. **SCOPE-001 SHOULD**: Limit scope of requests - ask focused questions
+
+## Custom Quality Commands
+
+Use these shortcuts to enforce quality gates efficiently:
+
+### QCODE - Full Quality Gate
+```bash
+# Run complete quality validation before proposing commit
+npm test && npm run typecheck && npm run lint
+```
+**Use when**: Ready to propose changes for commit
+**Ensures**: Tests pass, types valid, code formatted
+
+### QCHECK - Self-Review
+**Before proposing major changes, verify:**
+- [ ] All tests test real behavior (no fake tests)
+- [ ] No files excluded to bypass errors
+- [ ] No dependencies modified as workarounds
+- [ ] No configs changed to suppress errors
+- [ ] If blocker encountered, user was asked first
+- [ ] Function complexity is reasonable
+- [ ] Code is maintainable and readable
+
+### QPLAN - Codebase Consistency Check
+**Before starting implementation:**
+- [ ] Reviewed similar existing patterns in codebase
+- [ ] Confirmed approach matches project architecture
+- [ ] Identified all files that need changes
+- [ ] Estimated complexity and potential blockers
+
+## Communication Protocol
+
+### Before Starting Work (MUST)
+
+**For non-trivial tasks, you MUST:**
+1. Ask clarifying questions about requirements
+2. Propose 2-3 implementation approaches with tradeoffs
+3. Wait for user approval before coding
+4. Use plan mode for complex multi-step tasks
+
+**Trivial tasks** (simple edits, obvious fixes) can proceed directly.
+
+### When Reporting Progress (SHOULD)
+
+**Be concise but complete:**
+- What was done
+- What tests were added/modified
+- Any blockers or decisions made
+- Next steps (if applicable)
+
+**Don't over-explain** unless user asks for details.
+
+### After Making Mistakes (MUST)
+
+**If you make an error:**
+1. Acknowledge it clearly
+2. Explain what went wrong
+3. Propose how to prevent it next time
+4. Ask if CLAUDE.md should be updated with the lesson
+
+## Performance & Efficiency Guidelines
+
+### Testing Performance
+
+- **MUST run single test files** when possible: `npm test -- order.service.test.ts`
+  - Running full test suite (255 tests) takes ~20 seconds
+  - Single file tests complete in 1-3 seconds
+  - Only run full suite when verifying no regressions
+
+### Output Management
+
+- **Limit tool output size** to avoid context bloat:
+  - Use `head -20` when showing file previews
+  - Use `grep` with specific patterns instead of reading entire files
+  - Request specific line ranges when reading large files
+
+### Query Specificity
+
+- **Be specific in searches and queries**:
+  - ✅ Good: "Check menu.service.ts for duplicate validation logic"
+  - ❌ Bad: "check all files for issues"
+  - Specific queries are faster and use less context
+
+### When Context Gets Large
+
+**Signs you should suggest the user run `/compact` or `/clear`:**
+- Conversation has gone through multiple unrelated topics
+- You're repeatedly referencing old context that's no longer relevant
+- Response times are slowing down
+- Context window warnings appear
+
+**Suggest to user**: "The conversation context is getting large. Consider using `/compact` to preserve important context while reducing tokens, or `/clear` if we're switching to an unrelated task."
+
+**Never**: Pretend you can run these commands yourself
+
 ## Essential Commands
 
 ### Development
@@ -72,6 +196,159 @@ npm run format           # Format code with Biome
 
 # All Checks
 npm run check:all        # Run lint + typecheck + unit tests
+```
+
+## CRITICAL: When You Encounter Blockers
+
+**⚠️ STOP IMMEDIATELY if you encounter ANY of the following situations:**
+
+### Situations Requiring User Approval
+
+1. **Dependency Version Conflicts**
+   - Package version mismatches between package.json and installed versions
+   - Peer dependency warnings or errors
+   - Module export errors (e.g., "does not provide an export named...")
+
+2. **Test Failures You Can't Fix Immediately**
+   - Tests failing after implementation
+   - Browser/environment incompatibility issues
+   - Missing test utilities or setup
+
+3. **TypeScript Errors**
+   - Type errors you can't resolve with proper typing
+   - Complex union type issues
+   - Module resolution problems
+
+4. **Build Errors**
+   - Vite/build configuration issues
+   - Plugin compatibility problems
+   - Import/export resolution failures
+
+5. **Missing Library Features**
+   - Required functionality not available in current library version
+   - API changes between library versions
+   - Incompatible library interfaces
+
+### Required Process When Blocked
+
+**DO NOT implement workarounds. Instead:**
+
+1. **STOP working immediately** - Do not proceed with implementation
+2. **Explain the blocker clearly:**
+   - What is the exact error message?
+   - What action triggered it?
+   - What have you already tried?
+3. **Propose 2-3 solution options** with honest tradeoffs:
+   - Option A: [solution] - Pros: [...] Cons: [...]
+   - Option B: [solution] - Pros: [...] Cons: [...]
+   - Option C: [solution] - Pros: [...] Cons: [...]
+4. **Wait for user approval** before implementing ANY solution
+5. **Never commit workarounds** without explicit user permission
+
+### Red Flags: You're About to Create a Workaround
+
+**If you're doing ANY of these, STOP and ask the user:**
+
+- ❌ Adding `exclude: ['**/*.svelte']` or similar exclusions to test configs
+- ❌ Changing test environment from `browser` to `node` to avoid rendering issues
+- ❌ Creating "type-only" tests that don't test actual runtime behavior
+- ❌ Downgrading or removing dependencies to make errors disappear
+- ❌ Adding `skipLibCheck`, `@ts-ignore`, or `any` types to suppress errors
+- ❌ Modifying configs to bypass errors without understanding root cause
+- ❌ Adding comments like "tested elsewhere", "not needed", or "will test later"
+- ❌ Using incompatible library versions and "making it work"
+- ❌ Excluding files from linting/type-checking to bypass issues
+
+### Example: Proper Blocker Handling
+
+**WRONG (Workaround):**
+```
+❌ Hit version conflict → Exclude Svelte files from testing → Create fake tests → Commit
+```
+
+**RIGHT (Ask First):**
+```
+✅ Hit version conflict → STOP → Explain: "@sveltejs/vite-plugin-svelte v5.1.1 requires Vite 6, but we have Vite 5.4.20"
+✅ Propose options:
+   A. Downgrade plugin to v4.0.4 (matches POS app, proven working)
+   B. Upgrade Vite to v6 (breaking changes, need to test all apps)
+   C. Keep v5 and configure compatibility mode (may have issues)
+✅ Wait for approval
+✅ Implement approved solution
+✅ Only commit when explicitly told to do so
+```
+
+## Git Commit Guidelines
+
+### Golden Rule: Never Commit Without Permission
+
+**You must NEVER commit code unless explicitly told to do so by the user.**
+
+Phrases that mean you should commit:
+- "commit this"
+- "commit these changes"
+- "create a commit"
+- "git commit"
+
+**Do NOT commit when you:**
+- Finish implementing a feature (wait for user review)
+- Fix all tests (user may want to review first)
+- Complete a task from the todo list (ask if ready to commit)
+
+### Pre-Commit Quality Checklist
+
+**Before EVERY commit, verify ALL of these:**
+
+- [ ] **Real Tests**: All tests actually test real behavior, not hardcoded constants
+- [ ] **No Exclusions**: No files excluded from testing/linting to bypass errors
+- [ ] **No Workaround Dependencies**: No dependencies added/removed to work around issues
+- [ ] **No Config Hacks**: No configs modified to suppress errors without fixing root cause
+- [ ] **Blocker Approval**: If you encountered a blocker, you got user approval for the solution
+- [ ] **Tests Pass**: All tests pass (`npm test` shows 100% passing)
+- [ ] **Type Check Passes**: No TypeScript errors (`npm run typecheck`)
+- [ ] **Linting Passes**: No linting errors (`npm run lint`)
+- [ ] **User Approved**: User explicitly said to commit
+
+### Commit Message Format
+
+Follow existing patterns in `git log`:
+
+```bash
+<type>: <subject>
+
+<body>
+
+<footer>
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `refactor`: Code refactoring
+- `test`: Adding/updating tests
+- `docs`: Documentation updates
+- `chore`: Maintenance tasks
+
+**Example:**
+```
+feat: Add POSTextField wrapper component with browser testing
+
+Implemented POSTextField following POSCard/POSButton pattern:
+- Clean Props interface hiding m3-svelte complexity
+- Touch-optimized sizing (48px/56px/80px)
+- 15 browser-based component tests with Playwright
+- WCAG 2.1 AA compliant touch targets
+
+Testing Infrastructure:
+- Configured Vitest browser mode with Playwright
+- Added vitest-browser-svelte for Svelte 5 support
+- All 255 tests passing across monorepo
+
+Files:
+- packages/ui/src/components/POSTextField.svelte
+- packages/ui/src/components/POSTextField.test.ts
+- packages/ui/vitest.config.ts
+- packages/ui/package.json
 ```
 
 ## Architecture Overview
@@ -483,3 +760,5 @@ KEYCLOAK_URL=https://auth.host-pos.com
 8. **Turbo commands** run tasks across the monorepo efficiently
 9. **Browser testing** uses Playwright Browser Mode with Chromium for component tests
 10. **skipLibCheck: true** in apps/pos/tsconfig.json is intentional for m3-svelte library type complexity
+11. **NEVER commit code without explicit user approval** - see "Git Commit Guidelines" section
+12. **When blocked, STOP and ask** - never implement workarounds without user approval - see "CRITICAL: When You Encounter Blockers" section

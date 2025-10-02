@@ -22,11 +22,11 @@
   "devDependencies": {
     "@iconify/types": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^4.0.4",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/svelte": "^5.2.7",
-    "jsdom": "^25.0.1",
+    "@vitest/browser": "2.1.9",
+    "playwright": "^1.55.1",
     "typescript": "^5.7.2",
     "vite": "^5.4.20",
-    "vitest": "2.1.9"
+    "vitest": "2.1.9",
+    "vitest-browser-svelte": "^1.1.0"
   }
 }

@@ -5,7 +5,7 @@
  *
  * @component
  */
-import TextField from 'm3-svelte/forms/TextField.svelte';
+import { TextField } from 'm3-svelte';
 import type { IconifyIcon } from '@iconify/types';
 import type { HTMLInputAttributes } from 'svelte/elements';
 

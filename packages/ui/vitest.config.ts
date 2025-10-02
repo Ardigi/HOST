@@ -1,11 +1,20 @@
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+	plugins: [svelte()],
 	test: {
 		globals: true,
-		environment: 'node',
 		include: ['src/**/*.{test,spec}.{js,ts}'],
-		exclude: ['**/node_modules/**', '**/dist/**', '**/*.svelte'],
+		exclude: ['**/node_modules/**', '**/dist/**'],
+		// Use Vitest Browser Mode with Playwright for real browser testing
+		browser: {
+			enabled: true,
+			name: 'chromium',
+			provider: 'playwright',
+			headless: true,
+		},
+		setupFiles: ['vitest-browser-svelte'],
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json', 'html', 'lcov'],
@@ -15,7 +24,6 @@ export default defineConfig({
 				'**/*.config.{js,ts}',
 				'**/*.d.ts',
 				'**/index.ts', // Barrel exports
-				'**/*.svelte', // Svelte components (tested in POS app)
 			],
 			thresholds: {
 				branches: 80,

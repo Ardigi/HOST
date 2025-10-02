@@ -1,98 +1,243 @@
 /**
- * @description POSTextField Component Type Tests
+ * @description POSTextField Component Tests
  * @component POSTextField
- * @note Component rendering tests are in apps/pos/src/lib/components/POSTextField.test.ts
  */
 
+import { page } from '@vitest/browser/context';
 import { describe, expect, it } from 'vitest';
+import { render } from 'vitest-browser-svelte';
+import POSTextField from './POSTextField.svelte';
 
-describe('POSTextField Types', () => {
-	describe('Props Interface', () => {
-		it('should have valid size options', () => {
-			const sizes: Array<'minimum' | 'comfortable' | 'critical'> = [
-				'minimum',
-				'comfortable',
-				'critical',
-			];
+describe('POSTextField', () => {
+	describe('Rendering', () => {
+		it('should render with label', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Customer Name',
+					value: '',
+				},
+			});
 
-			for (const size of sizes) {
-				expect(['minimum', 'comfortable', 'critical']).toContain(size);
-			}
+			const input = page.getByRole('textbox', { name: /customer name/i });
+			await expect.element(input).toBeInTheDocument();
 		});
 
-		it('should have valid input type options', () => {
-			const types: Array<'text' | 'email' | 'password' | 'tel' | 'url' | 'search' | 'number'> = [
-				'text',
-				'email',
-				'password',
-				'tel',
-				'url',
-				'search',
-				'number',
-			];
+		it('should render with initial value', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Email',
+					value: 'test@example.com',
+				},
+			});
 
-			for (const type of types) {
-				expect(['text', 'email', 'password', 'tel', 'url', 'search', 'number']).toContain(type);
-			}
-		});
-
-		it('should validate height mappings', () => {
-			const heightMap = {
-				minimum: '48px',
-				comfortable: '56px',
-				critical: '80px',
-			};
-
-			expect(heightMap.minimum).toBe('48px');
-			expect(heightMap.comfortable).toBe('56px');
-			expect(heightMap.critical).toBe('80px');
+			const input = page.getByRole('textbox');
+			await expect.element(input).toHaveValue('test@example.com');
 		});
 	});
 
-	describe('Touch Target Compliance', () => {
-		it('should meet WCAG 2.1 AA minimum touch target', () => {
-			const minimumSize = 48; // pixels
-			const wcagMinimum = 44; // WCAG 2.1 AA
+	describe('Touch Targets (WCAG 2.1 AA)', () => {
+		it('should meet comfortable touch target height by default (56px)', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Test Field',
+					value: '',
+				},
+			});
 
-			expect(minimumSize).toBeGreaterThanOrEqual(wcagMinimum);
+			const container = page.getByRole('textbox').element().closest('.pos-text-field');
+			expect(container).toBeTruthy();
+
+			const box = container?.getBoundingClientRect();
+			expect(box.height).toBeGreaterThanOrEqual(56);
 		});
 
-		it('should provide comfortable POS touch targets', () => {
-			const comfortableSize = 56; // pixels
-			const posRecommended = 56;
+		it('should support minimum size (48px)', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Test Field',
+					value: '',
+					size: 'minimum',
+				},
+			});
 
-			expect(comfortableSize).toBe(posRecommended);
+			const container = page.getByRole('textbox').element().closest('.pos-text-field');
+			const box = container?.getBoundingClientRect();
+			expect(box.height).toBeGreaterThanOrEqual(48);
 		});
 
-		it('should provide critical action touch targets', () => {
-			const criticalSize = 80; // pixels
-			const posCritical = 80;
+		it('should support critical size (80px)', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Test Field',
+					value: '',
+					size: 'critical',
+				},
+			});
 
-			expect(criticalSize).toBe(posCritical);
+			const container = page.getByRole('textbox').element().closest('.pos-text-field');
+			const box = container?.getBoundingClientRect();
+			expect(box.height).toBeGreaterThanOrEqual(80);
 		});
 	});
 
-	describe('Accessibility Requirements', () => {
-		it('should require label prop', () => {
-			// TypeScript enforces label as required
-			const props = {
-				label: 'Required Label',
-				value: '',
-			};
+	describe('Props', () => {
+		it('should support disabled state', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Test',
+					value: '',
+					disabled: true,
+				},
+			});
 
-			expect(props.label).toBeTruthy();
-			expect(typeof props.label).toBe('string');
+			const input = page.getByRole('textbox');
+			await expect.element(input).toBeDisabled();
 		});
 
-		it('should support aria attributes', () => {
-			const ariaProps = {
-				'aria-label': 'Accessible label',
-				'aria-required': true,
-				'aria-invalid': false,
-			};
+		it('should support required attribute', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Test',
+					value: '',
+					required: true,
+				},
+			});
 
-			expect(ariaProps['aria-label']).toBeTruthy();
-			expect(ariaProps['aria-required']).toBe(true);
+			const input = page.getByRole('textbox');
+			const element = input.element() as HTMLInputElement;
+			expect(element.required).toBe(true);
+		});
+
+		it('should support placeholder text', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Email',
+					value: '',
+					placeholder: 'Enter your email',
+				},
+			});
+
+			const input = page.getByRole('textbox');
+			await expect.element(input).toHaveAttribute('placeholder', 'Enter your email');
+		});
+
+		it('should support input type variations', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Password',
+					value: '',
+					type: 'password',
+				},
+			});
+
+			const input = page.getByLabelText('Password');
+			const element = input.element() as HTMLInputElement;
+			expect(element.type).toBe('password');
+		});
+	});
+
+	describe('Accessibility', () => {
+		it('should have proper label association', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Customer Name',
+					value: '',
+				},
+			});
+
+			const input = page.getByRole('textbox', { name: /customer name/i });
+			await expect.element(input).toBeInTheDocument();
+		});
+
+		it('should support aria-label for screen readers', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Search',
+					value: '',
+					'aria-label': 'Search menu items',
+				},
+			});
+
+			const input = page.getByRole('textbox');
+			await expect.element(input).toHaveAttribute('aria-label', 'Search menu items');
+		});
+
+		it('should indicate required fields accessibly', async () => {
+			render(POSTextField, {
+				props: {
+					label: 'Name',
+					value: '',
+					required: true,
+				},
+			});
+
+			const input = page.getByRole('textbox');
+			const element = input.element() as HTMLInputElement;
+			expect(element.required).toBe(true);
+			expect(element.getAttribute('aria-required')).toBeTruthy();
+		});
+	});
+
+	describe('Events', () => {
+		it('should handle input events', async () => {
+			let inputValue = '';
+
+			render(POSTextField, {
+				props: {
+					label: 'Test',
+					value: '',
+					oninput: (e: Event) => {
+						const target = e.target as HTMLInputElement;
+						inputValue = target.value;
+					},
+				},
+			});
+
+			const input = page.getByRole('textbox');
+			await input.fill('test value');
+
+			expect(inputValue).toBe('test value');
+		});
+
+		it('should handle blur events', async () => {
+			let blurred = false;
+
+			render(POSTextField, {
+				props: {
+					label: 'Test',
+					value: '',
+					onblur: () => {
+						blurred = true;
+					},
+				},
+			});
+
+			const input = page.getByRole('textbox');
+			const element = input.element() as HTMLInputElement;
+			element.focus();
+			element.blur();
+
+			expect(blurred).toBe(true);
+		});
+
+		it('should handle focus events', async () => {
+			let focused = false;
+
+			render(POSTextField, {
+				props: {
+					label: 'Test',
+					value: '',
+					onfocus: () => {
+						focused = true;
+					},
+				},
+			});
+
+			const input = page.getByRole('textbox');
+			const element = input.element() as HTMLInputElement;
+			element.focus();
+
+			expect(focused).toBe(true);
 		});
 	});
 });

@@ -1,28 +1,37 @@
 <script lang="ts">
+import { enhance } from '$app/forms';
 import type { PageData } from './$types';
 
 // Props from load function
 let { data }: { data: PageData } = $props();
 
-// TODO: Implement order filtering and selection when feature is developed
-// Example Svelte 5 runes patterns:
-// let selectedOrder = $state<string | null>(null);
-// let filter = $state('all');
-// let filteredOrders = $derived(() => {
-//   if (filter === 'all') return data.orders;
-//   return data.orders.filter(order => order.status === filter);
-// });
+// State for create order dialog
+let showCreateDialog = $state(false);
+let selectedTable = $state('');
+let guestCount = $state(1);
 
 // Effect using $effect
 $effect(() => {
 	console.log('Orders updated:', data.orders.length);
 });
+
+function openCreateDialog() {
+	showCreateDialog = true;
+	selectedTable = '';
+	guestCount = 1;
+}
+
+function closeCreateDialog() {
+	showCreateDialog = false;
+}
 </script>
 
 <div class="orders-page">
 	<header>
 		<h1>Orders</h1>
-		<!-- TODO: Add filters when feature is implemented -->
+		<button class="btn-primary" onclick={openCreateDialog}>
+			+ New Order
+		</button>
 	</header>
 
 	<div class="orders-grid">
@@ -41,9 +50,73 @@ $effect(() => {
 	</div>
 </div>
 
+{#if showCreateDialog}
+	<div class="dialog-overlay" onclick={closeCreateDialog}>
+		<div class="dialog" onclick={(e) => e.stopPropagation()}>
+			<h2>Create New Order</h2>
+
+			<form method="POST" action="?/createOrder" use:enhance={() => {
+				return async ({ result }) => {
+					if (result.type === 'success') {
+						closeCreateDialog();
+					}
+				};
+			}}>
+				<div class="form-group">
+					<label for="tableNumber">Table Number</label>
+					<select
+						id="tableNumber"
+						name="tableNumber"
+						bind:value={selectedTable}
+						required
+					>
+						<option value="" disabled>Select a table</option>
+						{#each data.tables || [] as table (table.id)}
+							<option value={table.tableNumber}>
+								Table {table.tableNumber} ({table.sectionName}) - {table.capacity} seats
+							</option>
+						{/each}
+					</select>
+				</div>
+
+				<div class="form-group">
+					<label for="guestCount">Number of Guests</label>
+					<input
+						id="guestCount"
+						type="number"
+						name="guestCount"
+						bind:value={guestCount}
+						min="1"
+						max="20"
+						required
+					/>
+				</div>
+
+				<input type="hidden" name="orderType" value="dine_in" />
+
+				<div class="dialog-actions">
+					<button type="button" class="btn-secondary" onclick={closeCreateDialog}>
+						Cancel
+					</button>
+					<button type="submit" class="btn-primary">
+						Create Order
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{/if}
+
 <style>
 	.orders-page {
 		padding: 2rem;
+	}
+
+	header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
 	}
 
 	.orders-grid {
@@ -60,5 +133,86 @@ $effect(() => {
 		cursor: pointer;
 		text-align: left;
 		background: white;
+	}
+
+	.dialog-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1000;
+	}
+
+	.dialog {
+		background: white;
+		padding: 2rem;
+		border-radius: 12px;
+		width: 90%;
+		max-width: 500px;
+		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+	}
+
+	.dialog h2 {
+		margin-top: 0;
+		margin-bottom: 1.5rem;
+	}
+
+	.form-group {
+		margin-bottom: 1.5rem;
+	}
+
+	.form-group label {
+		display: block;
+		margin-bottom: 0.5rem;
+		font-weight: 500;
+	}
+
+	.form-group select,
+	.form-group input {
+		width: 100%;
+		padding: 0.75rem;
+		border: 1px solid #e5e7eb;
+		border-radius: 6px;
+		font-size: 1rem;
+	}
+
+	.dialog-actions {
+		display: flex;
+		gap: 1rem;
+		justify-content: flex-end;
+		margin-top: 2rem;
+	}
+
+	.btn-primary,
+	.btn-secondary {
+		padding: 0.75rem 1.5rem;
+		border-radius: 6px;
+		font-size: 1rem;
+		cursor: pointer;
+		border: none;
+		font-weight: 500;
+	}
+
+	.btn-primary {
+		background: #2563eb;
+		color: white;
+	}
+
+	.btn-primary:hover {
+		background: #1d4ed8;
+	}
+
+	.btn-secondary {
+		background: #f3f4f6;
+		color: #374151;
+	}
+
+	.btn-secondary:hover {
+		background: #e5e7eb;
 	}
 </style>

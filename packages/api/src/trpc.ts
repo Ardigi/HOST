@@ -10,12 +10,17 @@ import type { MenuService } from '@host/database/services';
  */
 export interface Context {
 	db: Database;
-	user: {
-		id: string;
-		email: string;
-		venueId: string;
-		role: string;
-	} | null;
+	user:
+		| {
+				id: string;
+				email: string;
+				firstName: string;
+				lastName: string;
+				venueId: string;
+				roles: string[];
+		  }
+		| null
+		| undefined;
 	// Services
 	menuService: MenuService;
 	// Add other services here
@@ -69,7 +74,7 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
  * Admin procedure - requires admin role
  */
 export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
-	if (ctx.user.role !== 'admin') {
+	if (!ctx.user.roles.includes('admin')) {
 		throw new TRPCError({
 			code: 'FORBIDDEN',
 			message: 'You do not have permission to access this resource',

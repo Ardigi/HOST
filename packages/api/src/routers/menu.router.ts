@@ -167,9 +167,7 @@ export const menuRouter = router({
 			})
 		)
 		.mutation(async ({ ctx, input }) => {
-			const item = await ctx.menuService.updateMenuItem(input.itemId, {
-				isAvailable: input.isAvailable,
-			});
+			const item = await ctx.menuService.toggleAvailability(input.itemId, input.isAvailable);
 
 			if (!item) {
 				throw new TRPCError({

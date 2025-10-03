@@ -1,16 +1,8 @@
 import * as schema from '@host/database/schema';
 import { TRPCError } from '@trpc/server';
-import { observable } from '@trpc/server/observable';
-import { and, eq, gte } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
-
-// Type for Order (placeholder until schema is fully defined)
-type Order = {
-	id: string;
-	status: string;
-	// Add other order fields as needed
-};
 
 /**
  * Order validation schemas
@@ -120,6 +112,17 @@ export const orderRouter = router({
 		return order;
 	}),
 
+	listTables: protectedProcedure
+		.input(z.object({ venueId: z.string() }))
+		.query(async ({ ctx, input }) => {
+			const tables = await ctx.db.query.tables.findMany({
+				where: (tables, { eq }) => eq(tables.venueId, input.venueId),
+				orderBy: (tables, { asc }) => [asc(tables.tableNumber)],
+			});
+
+			return { tables };
+		}),
+
 	// Mutations
 	create: protectedProcedure.input(createOrderSchema).mutation(async ({ ctx, input }) => {
 		// Generate order number
@@ -187,10 +190,13 @@ export const orderRouter = router({
 				if (item.modifiers) {
 					const modifierPrices = await Promise.all(
 						item.modifiers.map(async mod => {
-							const modifier = await ctx.db.query.modifiers.findFirst({
-								where: (modifiers, { eq }) => eq(modifiers.id, mod.modifierId),
+							// Note: Drizzle relational query types are inferred and extremely complex
+							// TypeScript cannot properly type these callback parameters without `any`
+							const modifier = await ctx.db.query.menuModifiers.findFirst({
+								// biome-ignore lint/suspicious/noExplicitAny: Drizzle query builder callback types are too complex
+								where: (menuModifiers: any, { eq }: any) => eq(menuModifiers.id, mod.modifierId),
 							});
-							return (modifier?.price || 0) * mod.quantity;
+							return (modifier?.priceAdjustment || 0) * mod.quantity;
 						})
 					);
 					modifierTotal = modifierPrices.reduce((sum, price) => sum + price, 0);
@@ -214,11 +220,12 @@ export const orderRouter = router({
 					.returning();
 
 				// Insert modifiers
-				if (item.modifiers) {
+				if (item.modifiers && orderItem) {
 					await Promise.all(
 						item.modifiers.map(async mod => {
-							const modifier = await ctx.db.query.modifiers.findFirst({
-								where: (modifiers, { eq }) => eq(modifiers.id, mod.modifierId),
+							const modifier = await ctx.db.query.menuModifiers.findFirst({
+								// biome-ignore lint/suspicious/noExplicitAny: Drizzle query builder callback types are too complex
+								where: (menuModifiers: any, { eq }: any) => eq(menuModifiers.id, mod.modifierId),
 							});
 
 							if (modifier) {
@@ -226,7 +233,7 @@ export const orderRouter = router({
 									orderItemId: orderItem.id,
 									modifierId: mod.modifierId,
 									name: modifier.name,
-									price: modifier.price,
+									price: modifier.priceAdjustment,
 									quantity: mod.quantity,
 								});
 							}
@@ -238,8 +245,8 @@ export const orderRouter = router({
 			})
 		);
 
-		// Recalculate order totals
-		await ctx.orderService.recalculateTotals(input.orderId);
+		// TODO: Recalculate order totals when OrderService is implemented
+		// await ctx.orderService.recalculateTotals(input.orderId);
 
 		return { orderItems };
 	}),
@@ -266,16 +273,16 @@ export const orderRouter = router({
 			return updatedOrder;
 		}),
 
-	// Subscriptions (for real-time updates)
-	onOrderUpdate: protectedProcedure
-		.input(z.object({ orderId: z.string() }))
-		.subscription(async ({ ctx, input }) => {
-			return observable<Order>(emit => {
-				const unsubscribe = ctx.eventBus.subscribe(`order.${input.orderId}.updated`, order => {
-					emit.next(order);
-				});
-
-				return unsubscribe;
-			});
-		}),
+	// TODO: Subscriptions (for real-time updates) - implement when eventBus is added
+	// onOrderUpdate: protectedProcedure
+	// 	.input(z.object({ orderId: z.string() }))
+	// 	.subscription(async ({ ctx, input }) => {
+	// 		return observable<Order>(emit => {
+	// 			const unsubscribe = ctx.eventBus.subscribe(`order.${input.orderId}.updated`, order => {
+	// 				emit.next(order);
+	// 			});
+	//
+	// 			return unsubscribe;
+	// 		});
+	// 	}),
 });

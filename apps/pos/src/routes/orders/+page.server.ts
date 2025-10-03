@@ -11,57 +11,74 @@ export const load: PageServerLoad = async event => {
 	//   throw redirect(302, '/auth/login');
 	// }
 
-	// Use tRPC to fetch orders
-	const _trpc = createServerCaller(event);
+	// Use tRPC to fetch orders and tables
+	const trpc = createServerCaller(event);
 
-	// For now, return empty orders since we need a venue setup
-	// In production, this would be:
-	// const { orders } = await _trpc.orders.list({
-	//   venueId: locals.user.venueId,
-	//   status: 'open',
-	// });
+	// TODO: Get venueId from authenticated user
+	// For now, use the seeded venue ID (will be dynamic after auth)
+	const venueId = 'aeboidqn7ujjblylzsuezi7f'; // From seed output
 
-	const orders: unknown[] = [];
+	try {
+		// Fetch orders and tables in parallel
+		const [ordersResult, tablesResult] = await Promise.all([
+			trpc.orders.list({ venueId, status: 'open' }),
+			trpc.orders.listTables({ venueId }),
+		]);
 
-	return {
-		orders,
-		user: locals.user,
-	};
+		return {
+			orders: ordersResult.orders,
+			tables: tablesResult.tables,
+			user: locals.user,
+		};
+	} catch (error) {
+		console.error('Failed to load orders data:', error);
+		return {
+			orders: [],
+			tables: [],
+			user: locals.user,
+		};
+	}
 };
 
 export const actions: Actions = {
 	createOrder: async event => {
-		const { request, locals } = event;
-
-		if (!locals.user) {
-			return fail(401, { error: 'Unauthorized' });
-		}
+		const { request } = event;
 
 		const formData = await request.formData();
 		const tableNumber = formData.get('tableNumber');
+		const guestCount = formData.get('guestCount');
+		const orderType = formData.get('orderType');
 
 		if (!tableNumber) {
 			return fail(400, { error: 'Table number is required' });
 		}
 
+		if (!guestCount) {
+			return fail(400, { error: 'Guest count is required' });
+		}
+
 		// Use tRPC to create order
-		const _trpc = createServerCaller(event);
+		const trpc = createServerCaller(event);
 
-		// TODO: Implement when venue setup is complete
-		// const order = await _trpc.orders.create({
-		//   venueId: locals.user.venueId,
-		//   tableNumber: Number(tableNumber),
-		//   guestCount: 1,
-		//   orderType: 'dine_in',
-		// });
+		// TODO: Get venueId from authenticated user
+		const venueId = 'aeboidqn7ujjblylzsuezi7f'; // From seed output
 
-		return {
-			success: true,
-			order: {
-				id: 'new-order-id',
+		try {
+			const order = await trpc.orders.create({
+				venueId,
 				tableNumber: Number(tableNumber),
-			},
-		};
+				guestCount: Number(guestCount),
+				orderType: String(orderType) as 'dine_in' | 'takeout' | 'delivery',
+			});
+
+			return {
+				success: true,
+				order,
+			};
+		} catch (error) {
+			console.error('Failed to create order:', error);
+			return fail(500, { error: 'Failed to create order' });
+		}
 	},
 
 	updateOrder: async event => {

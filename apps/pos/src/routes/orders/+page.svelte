@@ -24,6 +24,12 @@ function openCreateDialog() {
 function closeCreateDialog() {
 	showCreateDialog = false;
 }
+
+function handleOverlayKeydown(event: KeyboardEvent) {
+	if (event.key === 'Escape') {
+		closeCreateDialog();
+	}
+}
 </script>
 
 <div class="orders-page">
@@ -51,9 +57,23 @@ function closeCreateDialog() {
 </div>
 
 {#if showCreateDialog}
-	<div class="dialog-overlay" onclick={closeCreateDialog}>
-		<div class="dialog" onclick={(e) => e.stopPropagation()}>
-			<h2>Create New Order</h2>
+	<div
+		class="dialog-overlay"
+		role="button"
+		tabindex="0"
+		aria-label="Close dialog"
+		onclick={closeCreateDialog}
+		onkeydown={handleOverlayKeydown}
+	>
+		<div
+			class="dialog"
+			role="dialog"
+			aria-labelledby="dialog-title"
+			tabindex="-1"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+		>
+			<h2 id="dialog-title">Create New Order</h2>
 
 			<form method="POST" action="?/createOrder" use:enhance={() => {
 				return async ({ result }) => {

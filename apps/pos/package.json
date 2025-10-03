@@ -18,10 +18,14 @@
     "clean": "rm -rf .svelte-kit dist"
   },
   "dependencies": {
+    "@host/api": "*",
     "@host/database": "*",
     "@host/shared": "*",
     "@host/ui": "*",
-    "m3-svelte": "^5.9.0"
+    "@trpc/client": "^11.0.0-rc.633",
+    "@trpc/server": "^11.0.0-rc.633",
+    "m3-svelte": "^5.9.0",
+    "superjson": "^2.2.2"
   },
   "devDependencies": {
     "@opentelemetry/api": "^1.9.0",

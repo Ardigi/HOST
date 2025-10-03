@@ -1,32 +1,27 @@
+import { createServerCaller } from '$lib/trpc-server';
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-	// Server-side data loading with authentication
-	// TODO: Re-enable auth check after Week 1 Keycloak integration
+export const load: PageServerLoad = async event => {
+	const { locals } = event;
+
+	// Authentication check
+	// TODO: Re-enable after Keycloak is fully configured
 	// if (!locals.user) {
-	//   throw new Error('Unauthorized');
+	//   throw redirect(302, '/auth/login');
 	// }
 
-	// In real implementation, this would query the database
-	const orders = [
-		{
-			id: '1',
-			orderNumber: 1001,
-			tableNumber: 5,
-			status: 'open',
-			total: 45.5,
-			items: [],
-		},
-		{
-			id: '2',
-			orderNumber: 1002,
-			tableNumber: 3,
-			status: 'open',
-			total: 67.25,
-			items: [],
-		},
-	];
+	// Use tRPC to fetch orders
+	const _trpc = createServerCaller(event);
+
+	// For now, return empty orders since we need a venue setup
+	// In production, this would be:
+	// const { orders } = await _trpc.orders.list({
+	//   venueId: locals.user.venueId,
+	//   status: 'open',
+	// });
+
+	const orders: unknown[] = [];
 
 	return {
 		orders,
@@ -35,7 +30,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	createOrder: async ({ request, locals }) => {
+	createOrder: async event => {
+		const { request, locals } = event;
+
 		if (!locals.user) {
 			return fail(401, { error: 'Unauthorized' });
 		}
@@ -47,11 +44,15 @@ export const actions: Actions = {
 			return fail(400, { error: 'Table number is required' });
 		}
 
-		// In real implementation, create order in database
-		// const order = await orderService.create({
+		// Use tRPC to create order
+		const _trpc = createServerCaller(event);
+
+		// TODO: Implement when venue setup is complete
+		// const order = await _trpc.orders.create({
+		//   venueId: locals.user.venueId,
 		//   tableNumber: Number(tableNumber),
-		//   serverId: locals.user.id,
-		//   venueId: locals.user.venueId
+		//   guestCount: 1,
+		//   orderType: 'dine_in',
 		// });
 
 		return {
@@ -63,7 +64,9 @@ export const actions: Actions = {
 		};
 	},
 
-	updateOrder: async ({ request, locals }) => {
+	updateOrder: async event => {
+		const { request, locals } = event;
+
 		if (!locals.user) {
 			return fail(401, { error: 'Unauthorized' });
 		}
@@ -76,7 +79,15 @@ export const actions: Actions = {
 			return fail(400, { error: 'Missing required fields' });
 		}
 
-		// Handle order updates
+		// Use tRPC to update order
+		const _trpc = createServerCaller(event);
+
+		// TODO: Implement when needed
+		// await _trpc.orders.updateStatus({
+		//   orderId: String(orderId),
+		//   status: action as any,
+		// });
+
 		return { success: true };
 	},
 };

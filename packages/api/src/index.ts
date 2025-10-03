@@ -3,7 +3,9 @@
  * Combines all feature routers
  */
 
+import { menuRouter } from './routers/menu.router';
 import { orderRouter } from './routers/order.router';
+import { paymentRouter } from './routers/payment.router';
 import { router } from './trpc';
 
 /**
@@ -11,10 +13,10 @@ import { router } from './trpc';
  * This is the main router that combines all feature routers
  */
 export const appRouter = router({
+	menu: menuRouter,
 	orders: orderRouter,
+	payments: paymentRouter,
 	// Add more routers here:
-	// menu: menuRouter,
-	// payments: paymentRouter,
 	// inventory: inventoryRouter,
 	// auth: authRouter,
 });

@@ -30,4 +30,6 @@ logs/
 npm-debug.log*
 
 # Test coverage
+coverage/packages/ui/src/components/__screenshots__/
 coverage/
+*.code-workspace

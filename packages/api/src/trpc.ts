@@ -2,6 +2,8 @@ import type { Database } from '@host/database';
 import { TRPCError, initTRPC } from '@trpc/server';
 import superjson from 'superjson';
 
+import type { MenuService } from '@host/database/services';
+
 /**
  * tRPC Context
  * Available in all procedures
@@ -14,6 +16,8 @@ export interface Context {
 		venueId: string;
 		role: string;
 	} | null;
+	// Services
+	menuService: MenuService;
 	// Add other services here
 	// orderService: OrderService;
 	// eventBus: EventBus;

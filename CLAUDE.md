@@ -386,13 +386,13 @@ host/
 - Playwright Browser Mode for component testing (Chromium)
 - vitest-browser-svelte for Svelte 5 component testing
 - Playwright for E2E tests (implemented in weeks 9-10)
-- Current: 214 tests passing (85 DB + 111 shared + 13 POS + 5 UI)
-- Coverage: 100% functions, 99.93% statements (shared package)
+- Current: 457 tests passing (100 DB + 126 shared + 95 API + 20 UI + 106 design-tokens + 10 POS)
+- Coverage: 100% functions, 99.93% statements (shared package), 100% design tokens
 - Minimum 80% code coverage enforced, 85%+ for critical paths
 
 ### Database Layer (`packages/database`) ✅ Complete
 
-**Status:** 9 schemas implemented, 2 services (Menu, Order) with TDD, 85 tests passing
+**Status:** 9 schemas implemented, 2 services (Menu, Order) with TDD, 100 tests passing (schemas + client infrastructure)
 
 **Critical Pattern:** The database package uses Drizzle ORM with Turso (LibSQL). All database operations should:
 
@@ -517,6 +517,38 @@ import { orderFactory } from '@host/test-factories';
 const order = orderFactory.build({ tableId: '5' });
 const orders = orderFactory.buildList(10);
 ```
+
+### Lessons Learned: TDD Best Practices
+
+#### Design Tokens Testing Pattern (2025-10-03)
+
+**Issue**: Initially wrote failing tests and deleted them instead of fixing the root cause.
+
+**Root Cause**: Made assumptions about file exports and structure without reading the actual source code first.
+
+**Solution**: Always read source files FIRST, then write tests based on actual structure.
+
+**Correct Pattern**:
+1. Read the source file you're testing
+2. Identify actual exports, types, and interfaces
+3. Write comprehensive tests matching the real implementation
+4. Verify all tests pass
+
+**Example - Wrong Approach**:
+```typescript
+// ❌ Assumed spacing had '2xl' but it actually has 'xxl'
+expect(spacing['2xl']).toBeDefined(); // FAIL
+```
+
+**Example - Right Approach**:
+```typescript
+// ✅ Read spacing.ts first, saw it exports 'xxl'
+expect(spacing.xxl).toBe('48px'); // PASS
+```
+
+**Result**: 106 comprehensive design token tests covering all Material Design 3 systems (colors, elevation, typography, spacing, motion, touch-targets) with 100% coverage.
+
+**Key Takeaway**: **Never delete failing tests**. Fix them by understanding the actual implementation. Deleting tests is a workaround that hides problems.
 
 ## Material Design 3 (m3-svelte) Integration
 

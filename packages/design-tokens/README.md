@@ -505,6 +505,47 @@ prefersDark.addEventListener('change', (e) => {
 
 ---
 
+## Testing
+
+This package has comprehensive test coverage with **106 tests** across all token categories.
+
+### Test Coverage by File
+
+| File | Tests | Coverage |
+|------|-------|----------|
+| **colors.test.ts** | 11 | HCT color generation, theme variants, contrast ratios |
+| **elevation.test.ts** | 15 | Shadow tokens, component elevations, MD3 compliance |
+| **typography.test.ts** | 22 | Type scale, font families, WCAG accessibility |
+| **spacing.test.ts** | 14 | 8px base unit scale, component spacing, grid systems |
+| **motion.test.ts** | 24 | Duration tokens, easing curves, animation patterns |
+| **touch-targets.test.ts** | 20 | WCAG 2.1 AA compliance, POS-optimized sizing |
+
+### Run Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm run test:coverage
+
+# Run in watch mode for TDD
+npm run test:watch
+
+# Run specific test file
+npm test -- elevation.test.ts
+```
+
+### Test Quality Standards
+
+All tests follow these principles:
+- **Test actual behavior**, not hardcoded constants
+- **100% coverage** for all design token files
+- **WCAG compliance** verification (touch targets, typography)
+- **Material Design 3** specification validation
+
+---
+
 ## Development
 
 ### Adding New Tokens

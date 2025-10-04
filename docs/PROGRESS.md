@@ -128,7 +128,7 @@
 - [x] 9 database schemas (venues, users, menu*, orders*, inventory*)
 - [x] Migration system setup
 - [x] Seed data scripts
-- [x] 85 database tests passing
+- [x] 100 database tests passing (schemas + client infrastructure)
 
 #### Business Logic
 - [x] Menu Service with TDD (complete)
@@ -151,8 +151,8 @@
 - [x] Material Design 3 color token generation (HCT color space)
 - [x] Complete theme system (light/dark modes)
 - [x] CSS variable conversion (themeToCssVariables, themeToCSS)
-- [x] Typography, spacing, elevation, motion systems
-- [x] 11 design token tests passing
+- [x] Typography, spacing, elevation, motion, touch-target systems
+- [x] 106 design token tests passing (all 6 files fully tested)
 
 #### API Layer ✅ 75% Complete
 - [x] tRPC v11 setup with SvelteKit
@@ -415,7 +415,7 @@ See [Architecture Decision Records (ADR)](./adr/README.md) for details.
 |--------|--------|---------|--------|
 | Test Coverage (Statements) | 80% | 99.93% (shared), 98%+ (database) | ✅ Excellent |
 | Test Coverage (Functions) | 80% | 100% (database, shared) | ✅ Excellent |
-| Tests Passing | All | 214 (85 DB + 111 shared + 13 POS + 5 UI) | ✅ Pass |
+| Tests Passing | All | 457 (100 DB + 126 shared + 95 API + 20 UI + 106 design-tokens + 10 POS) | ✅ Pass |
 | TypeScript Errors | 0 | 0 | ✅ Pass |
 | Linting Errors | 0 | 0 | ✅ Pass |
 | Build Time | < 30s | ~12s | ✅ Pass |
@@ -425,12 +425,13 @@ See [Architecture Decision Records (ADR)](./adr/README.md) for details.
 
 | Package | Unit Tests | Integration Tests | Total | Coverage |
 |---------|-----------|-------------------|-------|----------|
-| Database | 85 | 0 | 85 | 98%+ |
-| Shared | 111 | 0 | 111 | 99.93% |
-| POS App | 13 | 0 | 13 | TBD |
-| UI | 5 | 0 | 5 | TBD |
-| Design Tokens | 11 | 0 | 11 | TBD |
-| **Total** | **225** | **0** | **225** | **99%+** |
+| Database | 100 | 0 | 100 | 98%+ |
+| Shared | 126 | 0 | 126 | 99.93% |
+| API | 95 | 0 | 95 | 88.87% |
+| POS App | 10 | 0 | 10 | TBD |
+| UI | 20 | 0 | 20 | TBD |
+| Design Tokens | 106 | 0 | 106 | 100% |
+| **Total** | **457** | **0** | **457** | **95%+** |
 
 ---
 
@@ -552,6 +553,7 @@ See [Architecture Decision Records (ADR)](./adr/README.md) for details.
 | 2025-09-30 | Tech Lead | Material Design 3 integration planned (ADR-003), Week 2 roadmap updated, MD3 component tracking added |
 | 2025-10-02 | Claude AI | **Major Update**: Progress tracker accuracy corrected from 10% to 40% actual completion. Week 1 complete (100%), Week 2 in progress (70%). Database layer complete (9 schemas, 85 tests), Business logic complete (2 services, 111 tests, 99.93% coverage), UI foundation started (2 components). 214 tests passing total. |
 | 2025-10-03 | Claude AI | **Comprehensive Audit**: Week 2 updated to 90% actual completion (from 70%). Authentication ✅ complete (OIDC/PKCE, SvelteKit routes), Design Tokens ✅ complete (HCT colors, theming, 11 tests), API Layer 75% (tRPC setup, Order Router complete). Total 225 tests passing. Overall progress: 48%. Week 3 roadmap updated with API integration & Payment Service priorities. |
+| 2025-10-03 | Claude AI | **Phase 2 TDD Complete**: Design tokens expanded to 106 tests (all 6 files), Database client infrastructure 15 tests added. Total: 457 tests passing (100% design tokens coverage). Lesson learned: Always read source files before writing tests. |
 
 ---
 

@@ -4,8 +4,12 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'node',
-		passWithNoTests: true, // Temporary: allows CI to pass while we implement tests
 		include: ['**/*.{test,spec}.{js,ts}'],
 		exclude: ['**/node_modules/**', '**/dist/**'],
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'json', 'html'],
+			exclude: ['**/node_modules/**', '**/dist/**', '**/*.test.ts', '**/*.spec.ts', '**/test/**'],
+		},
 	},
 });

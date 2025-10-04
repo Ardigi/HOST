@@ -105,7 +105,7 @@ HOST is a modern, fast, and user-friendly Point-of-Sale system designed specific
 ### Development Tools
 - **Monorepo**: [Turborepo 2.3.3+](https://turborepo.com/)
 - **Linting/Formatting**: [Biome 1.9.4+](https://biomejs.dev/)
-- **Testing**: [Vitest 2.1.8+](https://vitest.dev/) + [Playwright 1.49.1+](https://playwright.dev/)
+- **Testing**: [Vitest 2.1.8+](https://vitest.dev/) + [Playwright 1.49.1+](https://playwright.dev/) - 457 tests passing
 - **Type Safety**: [TypeScript 5.7.2+](https://www.typescriptlang.org/)
 
 📖 Full tech stack details: [TECH_STACK_2025.md](./docs/TECH_STACK_2025.md)

@@ -149,4 +149,110 @@ describe('POSList', () => {
 			expect(element.className).toContain('custom-list-class');
 		});
 	});
+
+	describe('Interactive vs Non-Interactive Rendering', () => {
+		it('should render interactive items as buttons', async () => {
+			render(POSList, {
+				items: testItems,
+				interactive: true,
+			});
+
+			// Interactive items should be rendered as buttons
+			const buttons = await page.getByRole('button').all();
+			expect(buttons.length).toBe(3); // 3 items = 3 buttons
+		});
+
+		it('should render non-interactive items without buttons', async () => {
+			render(POSList, {
+				items: testItems,
+				interactive: false,
+			});
+
+			// Non-interactive items should not have buttons
+			const buttons = await page.getByRole('button').all();
+			expect(buttons.length).toBe(0);
+		});
+	});
+
+	describe('Edge Cases', () => {
+		it('should handle items with unique IDs but same text', async () => {
+			const duplicateTextItems = [
+				{ id: '1', text: 'Same Text' },
+				{ id: '2', text: 'Same Text' },
+				{ id: '3', text: 'Same Text' },
+			];
+
+			const handleClick = vi.fn();
+			render(POSList, {
+				items: duplicateTextItems,
+				onItemClick: handleClick,
+			});
+
+			// All three items should be rendered
+			const items = await page.getByRole('listitem').all();
+			expect(items.length).toBe(3);
+
+			// Clicking each should call handler with correct ID
+			const allTextElements = await page.getByText('Same Text').all();
+			await allTextElements[0].click();
+			expect(handleClick).toHaveBeenCalledWith('1');
+
+			await allTextElements[1].click();
+			expect(handleClick).toHaveBeenCalledWith('2');
+		});
+
+		it('should apply correct size classes', async () => {
+			render(POSList, {
+				items: testItems,
+				size: 'standard',
+			});
+
+			const list = page.getByRole('list');
+			const element = await list.element();
+			expect(element.className).toContain('pos-list-standard');
+		});
+
+		it('should apply comfortable size class', async () => {
+			render(POSList, {
+				items: testItems,
+				size: 'comfortable',
+			});
+
+			const list = page.getByRole('list');
+			const element = await list.element();
+			expect(element.className).toContain('pos-list-comfortable');
+		});
+
+		it('should work without onItemClick callback', async () => {
+			// Should not throw error when clicking without callback
+			render(POSList, {
+				items: testItems,
+				interactive: true,
+				// No onItemClick callback
+			});
+
+			const item1 = page.getByText('Item 1');
+			// Should not throw
+			await item1.click();
+		});
+	});
+
+	describe('Keyboard Navigation', () => {
+		it('should focus interactive items with keyboard', async () => {
+			render(POSList, {
+				items: testItems,
+				interactive: true,
+			});
+
+			const buttons = await page.getByRole('button').all();
+			expect(buttons.length).toBe(3);
+
+			// Focus first button
+			await buttons[0].element().focus();
+
+			// Verify button is focused
+			const activeElement = document.activeElement;
+			expect(activeElement?.textContent).toContain('Item 1');
+		});
+	});
 });

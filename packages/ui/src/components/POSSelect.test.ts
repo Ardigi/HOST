@@ -201,4 +201,92 @@ describe('POSSelect', () => {
 			expect(element.className).toContain('custom-select-class');
 		});
 	});
+
+	describe('onChange Callback', () => {
+		it('should call onChange handler when value changes', async () => {
+			let callbackValue = '';
+			const handleChange = (value: string) => {
+				callbackValue = value;
+			};
+
+			render(POSSelect, {
+				label: 'Callback Test',
+				options: testOptions,
+				value: '1',
+				onChange: handleChange,
+			});
+
+			const select = page.getByRole('combobox', { name: 'Callback Test' });
+			const element = (await select.element()) as HTMLSelectElement;
+
+			// Change selection
+			element.value = '3';
+			element.dispatchEvent(new Event('change', { bubbles: true }));
+
+			// Wait for event to propagate
+			await new Promise(resolve => setTimeout(resolve, 50));
+
+			// Verify callback was called with new value
+			expect(callbackValue).toBe('3');
+		});
+
+		it('should work without onChange callback', async () => {
+			// This test ensures component doesn't crash when onChange is undefined
+			render(POSSelect, {
+				label: 'No Callback',
+				options: testOptions,
+				value: '1',
+			});
+
+			const select = page.getByRole('combobox', { name: 'No Callback' });
+			const element = (await select.element()) as HTMLSelectElement;
+
+			// Should not throw error when changing value
+			element.value = '2';
+			element.dispatchEvent(new Event('change', { bubbles: true }));
+
+			await new Promise(resolve => setTimeout(resolve, 50));
+			expect(element.value).toBe('2');
+		});
+	});
+
+	describe('Edge Cases', () => {
+		it('should handle empty string as initial value', async () => {
+			render(POSSelect, {
+				label: 'Empty Value',
+				options: testOptions,
+				value: '',
+			});
+
+			const select = page.getByRole('combobox', { name: 'Empty Value' });
+			const element = (await select.element()) as HTMLSelectElement;
+			expect(element.value).toBe('');
+		});
+
+		it('should apply correct size classes', async () => {
+			render(POSSelect, {
+				label: 'Size Class Test',
+				options: testOptions,
+				value: '',
+				size: 'standard',
+			});
+
+			const select = page.getByRole('combobox', { name: 'Size Class Test' });
+			const element = (await select.element()) as HTMLSelectElement;
+			expect(element.className).toContain('pos-select-standard');
+		});
+
+		it('should apply comfortable size class', async () => {
+			render(POSSelect, {
+				label: 'Comfortable Size Class',
+				options: testOptions,
+				value: '',
+				size: 'comfortable',
+			});
+
+			const select = page.getByRole('combobox', { name: 'Comfortable Size Class' });
+			const element = (await select.element()) as HTMLSelectElement;
+			expect(element.className).toContain('pos-select-comfortable');
+		});
+	});
 });

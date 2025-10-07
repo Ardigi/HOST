@@ -53,47 +53,45 @@ function closeCreateDialog() {
 </div>
 
 <POSDialog headline="Create New Order" bind:open={showCreateDialog} type="standard">
-	{#snippet children()}
-		<form id="create-order-form" method="POST" action="?/createOrder" use:enhance={() => {
-			return async ({ result }) => {
-				if (result.type === 'success') {
-					closeCreateDialog();
-				}
-			};
-		}}>
-			<div class="form-group">
-				<label for="tableNumber">Table Number</label>
-				<select
-					id="tableNumber"
-					name="tableNumber"
-					bind:value={selectedTable}
-					required
-				>
-					<option value="" disabled>Select a table</option>
-					{#each data.tables || [] as table (table.id)}
-						<option value={table.tableNumber}>
-							Table {table.tableNumber} ({table.sectionName}) - {table.capacity} seats
-						</option>
-					{/each}
-				</select>
-			</div>
+	<form id="create-order-form" method="POST" action="?/createOrder" use:enhance={() => {
+		return async ({ result }) => {
+			if (result.type === 'success') {
+				closeCreateDialog();
+			}
+		};
+	}}>
+		<div class="form-group">
+			<label for="tableNumber">Table Number</label>
+			<select
+				id="tableNumber"
+				name="tableNumber"
+				bind:value={selectedTable}
+				required
+			>
+				<option value="" disabled>Select a table</option>
+				{#each data.tables || [] as table (table.id)}
+					<option value={table.tableNumber}>
+						Table {table.tableNumber} ({table.sectionName}) - {table.capacity} seats
+					</option>
+				{/each}
+			</select>
+		</div>
 
-			<div class="form-group">
-				<label for="guestCount">Number of Guests</label>
-				<input
-					id="guestCount"
-					type="number"
-					name="guestCount"
-					bind:value={guestCount}
-					min="1"
-					max="20"
-					required
-				/>
-			</div>
+		<div class="form-group">
+			<label for="guestCount">Number of Guests</label>
+			<input
+				id="guestCount"
+				type="number"
+				name="guestCount"
+				bind:value={guestCount}
+				min="1"
+				max="20"
+				required
+			/>
+		</div>
 
-			<input type="hidden" name="orderType" value="dine_in" />
-		</form>
-	{/snippet}
+		<input type="hidden" name="orderType" value="dine_in" />
+	</form>
 
 	{#snippet customButtons()}
 		<POSButton

@@ -1,16 +1,19 @@
 diff --git a/node_modules/m3-svelte/package.json b/node_modules/m3-svelte/package.json
-index ab8f21a..28c8810 100644
+index 4c67384..28c8810 100644
 --- a/node_modules/m3-svelte/package.json
 +++ b/node_modules/m3-svelte/package.json
-@@ -22,9 +22,11 @@
+@@ -21,6 +21,14 @@
+       "types": "./package/index.d.ts",
        "svelte": "./package/index.js"
      },
-     "./package/buttons/Button.svelte": {
++    "./package/buttons/Button.svelte": {
 +      "types": "./package/buttons/Button.svelte.d.ts",
-       "svelte": "./package/buttons/Button.svelte"
-     },
-     "./package/containers/Card.svelte": {
++      "svelte": "./package/buttons/Button.svelte"
++    },
++    "./package/containers/Card.svelte": {
 +      "types": "./package/containers/Card.svelte.d.ts",
-       "svelte": "./package/containers/Card.svelte"
-     },
++      "svelte": "./package/containers/Card.svelte"
++    },
      "./misc/styles.css": {
+       "import": "./package/misc/styles.css",
+       "style": "./package/misc/styles.css"

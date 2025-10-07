@@ -89,6 +89,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate SvelteKit configuration
+        run: cd apps/pos && npx svelte-kit sync
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 

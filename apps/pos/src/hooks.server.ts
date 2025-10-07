@@ -100,9 +100,9 @@ const handleAuthorization: Handle = async ({ event, resolve }) => {
 	const { pathname } = event.url;
 
 	// E2E Test Mode: Bypass authentication for automated testing
-	// When CI=true, inject a mock authenticated user to allow E2E tests to run
-	// without requiring Keycloak. This user matches seed data to satisfy FK constraints.
-	const isE2EMode = import.meta.env.PUBLIC_E2E_MODE === 'true' || process.env.CI === 'true';
+	// Only enabled via explicit PUBLIC_E2E_MODE environment variable
+	// This user matches seed data to satisfy FK constraints.
+	const isE2EMode = import.meta.env.PUBLIC_E2E_MODE === 'true';
 
 	if (isE2EMode && !event.locals.user) {
 		// Import test user configuration from e2e/test-user.config.ts

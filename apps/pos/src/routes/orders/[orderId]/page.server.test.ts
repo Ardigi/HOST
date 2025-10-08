@@ -14,8 +14,9 @@ vi.mock('@sveltejs/kit', () => ({
 }));
 
 describe('Order Detail Page Server', () => {
+	type RouteParams = { orderId: string };
 	const mockEvent = {
-		params: { orderId: 'order-123' },
+		params: { orderId: 'order-123' } as RouteParams,
 		locals: {
 			user: {
 				id: 'user-123',
@@ -25,7 +26,12 @@ describe('Order Detail Page Server', () => {
 			},
 		},
 		request: new Request('http://localhost/orders/order-123'),
-	} as unknown as RequestEvent;
+		parent: async () => ({}),
+		depends: () => {
+			// Mock function - no-op
+		},
+		untrack: <T>(fn: () => T) => fn(),
+	} as unknown as RequestEvent<RouteParams, '/orders/[orderId]'>;
 
 	const mockTrpc = {
 		orders: {
@@ -89,7 +95,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { load } = await import('./+page.server');
-			const result = await (load as PageServerLoad)(mockEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			const result = await (load as PageServerLoad)(mockEvent as any);
 
 			// Assert
 			expect(createServerCaller).toHaveBeenCalledWith(mockEvent);
@@ -114,7 +121,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { load } = await import('./+page.server');
-			const result = await (load as PageServerLoad)(mockEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			const result = await (load as PageServerLoad)(mockEvent as any);
 
 			// Assert
 			expect(result).toEqual({
@@ -161,7 +169,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			const result = await (actions as Actions).addItem(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			const result = await (actions as Actions).addItem(actionEvent as any);
 
 			// Assert
 			expect(mockTrpc.orders.addItems).toHaveBeenCalledWith({
@@ -217,7 +226,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			const result = await (actions as Actions).addItem(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			const result = await (actions as Actions).addItem(actionEvent as any);
 
 			// Assert
 			expect(mockTrpc.orders.addItems).toHaveBeenCalledWith({
@@ -273,7 +283,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			const result = await (actions as Actions).addItem(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			const result = await (actions as Actions).addItem(actionEvent as any);
 
 			// Assert
 			expect(mockTrpc.orders.addItems).toHaveBeenCalledWith({
@@ -311,7 +322,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			await (actions as Actions).addItem(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			await (actions as Actions).addItem(actionEvent as any);
 
 			// Assert
 			expect(fail).toHaveBeenCalledWith(400, { error: 'Menu item ID is required' });
@@ -335,7 +347,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			await (actions as Actions).addItem(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			await (actions as Actions).addItem(actionEvent as any);
 
 			// Assert
 			expect(fail).toHaveBeenCalledWith(400, { error: 'Quantity is required' });
@@ -362,7 +375,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			await (actions as Actions).addItem(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			await (actions as Actions).addItem(actionEvent as any);
 
 			// Assert
 			expect(fail).toHaveBeenCalledWith(500, { error: 'Failed to add item to order' });
@@ -388,7 +402,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			const result = await (actions as Actions).removeItem(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			const result = await (actions as Actions).removeItem(actionEvent as any);
 
 			// Assert
 			expect(result).toEqual({ success: true });
@@ -411,7 +426,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			await (actions as Actions).removeItem(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			await (actions as Actions).removeItem(actionEvent as any);
 
 			// Assert
 			expect(fail).toHaveBeenCalledWith(400, { error: 'Order item ID is required' });
@@ -438,9 +454,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			const result = await (actions as Actions).updateQuantity(
-				actionEvent as unknown as RequestEvent
-			);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			const result = await (actions as Actions).updateQuantity(actionEvent as any);
 
 			// Assert
 			expect(result).toEqual({ success: true });
@@ -464,7 +479,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			await (actions as Actions).updateQuantity(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			await (actions as Actions).updateQuantity(actionEvent as any);
 
 			// Assert
 			expect(fail).toHaveBeenCalledWith(400, { error: 'Quantity is required' });
@@ -489,7 +505,8 @@ describe('Order Detail Page Server', () => {
 
 			// Act
 			const { actions } = await import('./+page.server');
-			await (actions as Actions).updateQuantity(actionEvent as unknown as RequestEvent);
+			// biome-ignore lint/suspicious/noExplicitAny: Test mock - type precision less critical
+			await (actions as Actions).updateQuantity(actionEvent as any);
 
 			// Assert
 			expect(fail).toHaveBeenCalledWith(400, { error: 'Quantity must be at least 1' });

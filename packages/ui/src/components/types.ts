@@ -2,10 +2,13 @@
  * Shared component types
  */
 
+import type { HTMLOptionAttributes } from 'svelte/elements';
+
 /**
  * Select component option type
+ * Extends HTMLOptionAttributes to support all standard option attributes
  */
-export interface SelectOption {
+export interface SelectOption extends HTMLOptionAttributes {
 	/**
 	 * Display text for the option
 	 */
@@ -15,11 +18,6 @@ export interface SelectOption {
 	 * Value of the option
 	 */
 	value: string;
-
-	/**
-	 * Optional icon name (Material Symbols)
-	 */
-	icon?: string;
 }
 
 /**

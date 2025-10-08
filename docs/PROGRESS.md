@@ -12,7 +12,7 @@
 
 | Metric | Achievement |
 |--------|-------------|
-| **Total Tests** | 1,027 passing tests |
+| **Total Tests** | 1,121 passing tests |
 | **Statement Coverage** | 99.93% (shared package) |
 | **Function Coverage** | 100% (database package) |
 | **CI/CD Status** | ✅ All checks passing |
@@ -25,7 +25,10 @@
 - **API Layer**: 141 tests (tRPC routers + integration)
 - **Design System**: 145 tests (Material Design 3 tokens)
 - **UI Components**: 146 tests (browser-based component tests)
-- **POS Application**: 89 tests (SvelteKit routes + components)
+- **POS Application**: 177 tests (SvelteKit routes + components)
+  - Order detail page: 24 tests (11 component + 13 server)
+  - POSTabs component: 64 tests
+  - Other routes/components: 89 tests
 - **E2E Tests**: 6 tests (Playwright end-to-end flows)
 
 ---
@@ -103,10 +106,30 @@
 
 ### 🚧 In Progress Features
 
+#### Order Management (US-004) - 24 Tests
+- [x] **Phase 1**: Server-side order item management (13 tests)
+  - tRPC integration for order detail loading
+  - Form actions: addItem, removeItem, updateQuantity
+  - Comprehensive error handling and validation
+- [x] **Phase 2**: Order detail UI with tab navigation (24 tests)
+  - Tab-based interface (Details, Menu, Payment)
+  - Order summary sidebar with real-time calculations
+  - Category filtering for menu items
+  - 11 component tests (Vitest Browser Mode)
+  - 13 server-side tests (load function + actions)
+- [ ] **Phase 3**: Real-time updates and calculations
+  - Live order total updates
+  - Inventory availability checks
+  - Kitchen status synchronization
+- [ ] **Phase 4**: End-to-end tests
+  - Complete order flow validation
+  - Multi-user scenarios
+  - Error recovery patterns
+
 #### E2E Testing (6 Tests)
 - [x] Authentication setup with storageState pattern
 - [x] US-003: Create Order flow (6 scenarios)
-- [ ] US-004: Add Items to Order flow
+- [ ] US-004: Add Items to Order flow (Phase 4)
 - [ ] US-005: Process Payment flow
 - [ ] US-006: Menu Management flow
 - [ ] Additional user story coverage
@@ -114,7 +137,6 @@
 ### 📋 Planned Features
 
 #### Core POS Features
-- [ ] Order detail page with menu item selection (US-004)
 - [ ] Modifier selection and customization UI
 - [ ] Stripe Connect payment integration
 - [ ] Real-time inventory tracking
@@ -141,7 +163,7 @@
 
 ### Quality Engineering
 - Test-Driven Development (TDD) with Red-Green-Refactor cycles
-- 1,027 total tests across 7 packages
+- 1,121 total tests across 7 packages
 - 99.93% statement coverage in business logic layer
 - 100% function coverage in database layer
 - Strict TypeScript mode with zero errors
@@ -213,7 +235,7 @@
 | API Layer | ✅ Complete | 141 | 85%+ |
 | Design System | ✅ Complete | 145 | 100% |
 | UI Components | ✅ Complete | 146 | 80%+ |
-| POS Application | 🚧 In Progress | 89 | 85%+ |
+| POS Application | 🚧 In Progress | 177 | 85%+ |
 | E2E Tests | 🚧 Expanding | 6 | N/A |
 
 ---
